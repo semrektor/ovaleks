@@ -134,7 +134,8 @@ p { margin: 0 0 1em; }
 /* Dar telefonda üst çubuktaki büyüteç gizlenir; arama menünün içindedir */
 @media (max-width: 520px) {
   .site-header .search-btn { display: none; }
-  .site-header .btn { margin-left: auto; }
+  .site-header .btn { margin-left: auto; white-space: nowrap; padding-inline: 14px; }
+  .site-header .logo img { height: 28px; }
 }
 
 /* Ürün arama: üst çubuktaki büyüteç ve arama penceresi */
