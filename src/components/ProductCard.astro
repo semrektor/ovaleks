@@ -1,0 +1,13 @@
+---
+import { img, productUrl } from '../lib/catalog.js';
+const { product } = Astro.props;
+const net = product.alanlar?.Net || product.alanlar?.['Net Miktar'];
+---
+
+<a class="card" href={productUrl(product)}>
+  {img(product) && <img src={img(product)} alt={product.gorsel_alt || product.ad} width="400" height="400" loading="lazy" decoding="async" />}
+  <div class="body">
+    <div class="name">{product.ad}</div>
+    <div class="meta">{[net, product.sku && `Kod ${product.sku}`].filter(Boolean).join(' · ')}</div>
+  </div>
+</a>

@@ -1,0 +1,261 @@
+---
+import Base from '../../layouts/Base.astro';
+import { products } from '../../lib/catalog.js';
+
+// Üç kuşak. Kesinleşmemiş bilgiler "teyit" alanıyla işaretlenir ve sayfada etiketle gösterilir.
+const kusaklar = [
+  { key: 'dede', sira: '1. kuşak', unvan: 'Dede', ad: 'Burhanettin Dar', rol: 'Pasta ustası, kurucu' },
+  { key: 'ogul', sira: '2. kuşak', unvan: 'Oğul', ad: 'Ender Dar', rol: 'Genel Müdür' },
+  { key: 'torun', sira: '3. kuşak', unvan: 'Torun', ad: 'Emre Dar', rol: null, teyit: 'görev' },
+];
+const olaylar = [
+  { kusak: 'dede', yil: '1986', baslik: 'Küçük bir atölye', metin: 'Pasta ustası Burhanettin Dar, Ustalar Gıda’yı küçük bir atölyede kurdu.', foto: 'Atölyenin ilk yıllarından bir fotoğraf' },
+  { kusak: 'dede', yil: null, teyit: 'yıl', baslik: 'Ovaleks markası ve hazır karışımlar', metin: 'Ustalar Gıda, pastacılığa özel hazır karışımlarıyla sektörün ilklerinden oldu; ürünler Ovaleks markasıyla profesyonel mutfaklara ulaştı.', foto: 'İlk ürün ambalajları ya da eski bir katalog sayfası' },
+  { kusak: 'ogul', yil: '1995', baslik: 'Bayrak ikinci kuşakta', metin: 'Burhanettin Dar’ın vefatının ardından yönetimi oğlu Ender Dar devraldı.', foto: 'Baba ve oğulun birlikte olduğu bir fotoğraf' },
+  { kusak: 'ogul', yil: null, teyit: 'yıllar ve aşamalar', baslik: 'Atölyeden fabrikaya', metin: 'Üretim adım adım büyüdü; atölye, bugün İstanbul Avcılar’da faaliyet gösteren üretim tesisine dönüştü.', foto: 'Fabrikanın dışı ve üretim hattı' },
+  { kusak: 'ogul', yil: null, teyit: 'yıl ve belge adları', baslik: 'Kalite ve gıda güvenliği belgeleri', metin: 'Üretim, kalite ve gıda güvenliği sistemleriyle belgelendi; ürünler Türk Gıda Kodeksi’ne uygun olarak üretiliyor.', foto: 'Sertifikalar' },
+  { kusak: 'torun', yil: null, teyit: 'yıl ve görev', baslik: 'Üçüncü kuşak görevde', metin: 'Emre Dar’ın katılımıyla üçüncü kuşak da işin başına geçti.', foto: 'Üç kuşağın ya da Ender Dar ile Emre Dar’ın birlikte fotoğrafı' },
+  { kusak: 'torun', yil: '2026', baslik: '40. yıl', metin: `Ovaleks 40. yılında, ${products.length} ürünlük yelpazesi ve 7 aromalı waffle soslarıyla profesyonel mutfaklar için üretmeye devam ediyor.`, foto: 'Güncel ürün ailesi' },
+];
+---
+
+<Base
+  theme="dark"
+  title="40. Yıl: 1986’dan Bugüne Üç Kuşak | Ovaleks"
+  description="Ovaleks 40 yaşında. 1986’da pasta ustası Burhanettin Dar’ın atölyesinde başlayan hikâye, oğlu Ender Dar ve üçüncü kuşakla bugünkü üretim tesisine uzanıyor."
+>
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">1986 – 2026</p>
+      <h1 class="display"><span class="num" data-count="40">40</span><span class="yil">. yıl</span></h1>
+      <p class="lead">Bir pasta ustasının atölyesinden bugünkü üretim tesisine: dede, oğul ve torunun kırk yıllık hikâyesi.</p>
+      <ol class="chain" aria-label="Üç kuşak">
+        {
+          kusaklar.map((k, i) => (
+            <li data-chain>
+              <span class="who">{k.unvan}</span>
+              <b>{k.ad}</b>
+              {i < kusaklar.length - 1 && <i class="arrow" aria-hidden="true" />}
+            </li>
+          ))
+        }
+      </ol>
+      <p class="scroll-hint">Hikâyeyi görmek için kaydırın ↓</p>
+    </div>
+  </section>
+
+  <section class="tl" data-tl>
+    <!-- Kuşak ekseni: kaydırdıkça dede → oğul → torun sırayla yanar -->
+    <aside class="rail" aria-hidden="true">
+      <div class="rail-line"><span data-rail-fill></span></div>
+      {
+        kusaklar.map((k) => (
+          <div class="gen" data-gen={k.key}>
+            <span class="dot" />
+            <small>{k.sira} · {k.unvan}</small>
+            <b>{k.ad}</b>
+            {k.rol && <em>{k.rol}</em>}
+          </div>
+        ))
+      }
+    </aside>
+
+    <div class="events">
+      <div class="axis" aria-hidden="true"><span data-axis-fill></span></div>
+      {
+        olaylar.map((o, i) => (
+          <>
+            {(i === 0 || olaylar[i - 1].kusak !== o.kusak) && (
+              <header class="chapter" data-chapter={o.kusak}>
+                <small>{kusaklar.find((k) => k.key === o.kusak).sira}</small>
+                <h2 class="display">
+                  {kusaklar.find((k) => k.key === o.kusak).unvan}: {kusaklar.find((k) => k.key === o.kusak).ad}
+                  {kusaklar.find((k) => k.key === o.kusak).teyit && <span class="taslak">{kusaklar.find((k) => k.key === o.kusak).teyit} teyit edilecek</span>}
+                </h2>
+              </header>
+            )}
+            <article class="event" data-event data-kusak={o.kusak}>
+              <span class="node" aria-hidden="true" />
+              <div class="card">
+                <p class="year display">{o.yil ?? '—'}{!o.yil && <span class="taslak">{o.teyit} teyit edilecek</span>}{o.yil && o.teyit && <span class="taslak">{o.teyit} teyit edilecek</span>}</p>
+                <h3>{o.baslik}</h3>
+                <p>{o.metin}</p>
+                <div class="photo">Fotoğraf: {o.foto}</div>
+              </div>
+            </article>
+          </>
+        ))
+      }
+    </div>
+
+    <!-- Yıl sayacı: sağda kendi sütununda sabit durur, kartların arkasında kalmaz -->
+    <aside class="yearcol" aria-hidden="true">
+      <small>Yıl</small>
+      <span class="display" data-year>1986</span>
+    </aside>
+  </section>
+
+  <section class="outro">
+    <div class="wrap">
+      <h2 class="display">Kırk yıldır aynı tezgâhın ustalığı.</h2>
+      <p class="lead">Üç kuşağın emeğiyle üretilen ürünleri inceleyin ya da satış ekibimizle görüşün.</p>
+      <div class="actions">
+        <a class="btn" href="/#teklif">Toptan teklif al</a>
+        <a class="btn ghost" href="/urunler/">Ürünleri incele</a>
+      </div>
+      <p class="draft">Bu sayfa taslaktır: “teyit edilecek” etiketli yıllar ve bilgiler ile fotoğraflar firmadan gelecek.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { min-height: 100vh; display: grid; align-items: center; padding: 120px 0 60px; text-align: center; background: radial-gradient(80% 60% at 50% 35%, #3b2616 0%, #1a0d0a 60%, #120907 100%); }
+  .hero .eyebrow { color: var(--gold); letter-spacing: 0.4em; }
+  .hero h1 { font-size: clamp(120px, 26vw, 400px); line-height: 0.8; color: #fff; margin: 10px 0 24px; }
+  .hero .num { background: linear-gradient(180deg, #f6e3ac 0%, #c9a24b 55%, #8a6a22 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero .yil { font-size: 0.24em; margin-left: 0.1em; }
+  .lead { font-size: clamp(17px, 1.7vw, 21px); max-width: 56ch; margin: 0 auto; color: #d9c9b6; }
+  .chain { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 18px 0; margin: 44px 0 0; padding: 0; }
+  .chain li { display: grid; gap: 2px; padding: 0 clamp(18px, 3vw, 44px); position: relative; }
+  .chain .who { font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold); }
+  .chain b { font-size: clamp(18px, 2vw, 26px); color: #fff; }
+  .chain .arrow { position: absolute; right: -14px; top: 50%; width: 28px; height: 2px; background: var(--gold); transform-origin: left; }
+  .chain .arrow::after { content: ''; position: absolute; right: -1px; top: -4px; border: 5px solid transparent; border-left-color: var(--gold); }
+  .scroll-hint { margin-top: 48px; font-size: 13px; opacity: 0.6; }
+
+  /* Zaman çizelgesi */
+  .tl { --gold: #c9a24b; display: grid; grid-template-columns: 220px minmax(0, 1fr) auto; gap: clamp(20px, 3vw, 48px); max-width: 1240px; margin: 0 auto; padding: 60px var(--gutter) 120px; position: relative; }
+  .yearcol { position: sticky; top: 30vh; align-self: start; display: grid; justify-items: end; text-align: right; }
+  .yearcol small { font-size: 12px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-right: 4px; }
+  .yearcol span { font-size: clamp(84px, 11.5vw, 168px); line-height: 0.9; font-variant-numeric: tabular-nums; background: linear-gradient(180deg, #f6e3ac 0%, #c9a24b 55%, #8a6a22 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero, .outro { --gold: #c9a24b; }
+  .rail { position: sticky; top: 110px; align-self: start; display: grid; gap: 34px; padding-left: 30px; }
+  .rail-line { position: absolute; left: 7px; top: 10px; bottom: 10px; width: 2px; background: #3a2a22; }
+  .rail-line span { display: block; width: 100%; height: 100%; background: var(--gold); transform-origin: top; transform: scaleY(0); transition: transform 0.6s ease; }
+  .gen { display: grid; gap: 2px; position: relative; opacity: 0.38; transition: opacity 0.4s; }
+  .gen .dot { position: absolute; left: -30px; top: 4px; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--gold); background: #120907; transition: background 0.4s, box-shadow 0.4s; }
+  .gen small { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+  .gen b { font-size: 20px; color: #fff; }
+  .gen em { font-style: normal; font-size: 14px; color: #b9a797; }
+  .gen.on { opacity: 1; }
+  .gen.on .dot { background: var(--gold); box-shadow: 0 0 0 6px rgba(201, 162, 75, 0.2); }
+
+  .events { position: relative; padding-left: 44px; }
+  .axis { position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: #3a2a22; }
+  .axis span { display: block; width: 100%; height: 100%; background: linear-gradient(var(--gold), #f6e3ac); transform-origin: top; }
+  .chapter { position: relative; z-index: 1; padding: 56px 0 8px; }
+  .chapter:first-of-type { padding-top: 8px; }
+  .chapter small { font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold); }
+  .chapter h2 { font-size: clamp(30px, 4vw, 56px); color: #fff; margin-top: 6px; }
+  .chapter .taslak { font-family: var(--text); font-stretch: normal; margin-left: 12px; color: #b9a797; }
+  .event { position: relative; z-index: 1; padding: 22px 0; }
+  .event .node { position: absolute; left: -44px; top: 50px; width: 16px; height: 16px; border-radius: 50%; background: #120907; border: 2px solid var(--gold); }
+  .card { max-width: 580px; padding: 26px 28px; border: 1px solid #3a2a22; border-radius: 22px; background: rgba(28, 17, 13, 0.86); backdrop-filter: blur(4px); }
+  .year { font-size: clamp(44px, 6vw, 84px); color: var(--gold); margin: 0 0 8px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .year .taslak { font-family: var(--text); font-stretch: normal; color: #b9a797; }
+  .card h3 { font-size: 22px; color: #fff; margin-bottom: 8px; }
+  .card p { color: #cdbba8; }
+  .photo { margin-top: 16px; padding: 22px; border: 1px dashed #5a463a; border-radius: 14px; color: #8f7d6d; font-size: 14px; text-align: center; }
+
+  .outro { padding: 40px 0 120px; text-align: center; }
+  .outro h2 { font-size: clamp(34px, 5vw, 72px); color: #fff; margin-bottom: 16px; }
+  .outro .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 28px; }
+  .draft { margin-top: 36px; font-size: 13px; color: #8f7d6d; }
+
+  @media (max-width: 900px) {
+    .tl { grid-template-columns: 1fr; padding-top: 20px; }
+    /* Telefonda yıl sayacı sağ altta küçük bir rozet olur */
+    .yearcol { position: sticky; top: auto; bottom: 14px; justify-self: end; z-index: 6; padding: 8px 14px 10px; border-radius: 16px; background: rgba(18, 9, 7, 0.9); border: 1px solid #5a463a; }
+    .yearcol small { font-size: 9px; }
+    .yearcol span { font-size: 40px; }
+    /* Telefonda kuşak ekseni üstte yatay sabit şerit olur */
+    .rail { top: 68px; z-index: 5; display: flex; gap: 0; padding: 12px 0; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); background: rgba(18, 9, 7, 0.92); backdrop-filter: blur(8px); border-bottom: 1px solid #3a2a22; }
+    .rail-line { display: none; }
+    .gen { flex: 1; padding-left: 22px; }
+    .gen .dot { left: 0; width: 12px; height: 12px; }
+    .gen b { font-size: 14px; }
+    .gen em { display: none; }
+    .gen small { font-size: 9px; letter-spacing: 0.12em; }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import Lenis from 'lenis';
+
+  gsap.registerPlugin(ScrollTrigger);
+  const tl = document.querySelector('[data-tl]');
+  const gens = [...tl.querySelectorAll('[data-gen]')];
+  const railFill = tl.querySelector('[data-rail-fill]');
+  const order = gens.map((g) => g.dataset.gen);
+
+  // Kuşak ekseni: etkin kuşağa kadar olanlar yanar (hareket kapalıyken de çalışır)
+  const setGen = (key) => {
+    const i = order.indexOf(key);
+    gens.forEach((g, k) => g.classList.toggle('on', k <= i));
+    if (railFill) railFill.style.transform = `scaleY(${i <= 0 ? 0.02 : i / (order.length - 1)})`;
+  };
+  setGen(order[0]);
+  tl.querySelectorAll('[data-event]').forEach((el) => {
+    ScrollTrigger.create({ trigger: el, start: 'top 60%', end: 'bottom 60%', onEnter: () => setGen(el.dataset.kusak), onEnterBack: () => setGen(el.dataset.kusak) });
+  });
+
+  const mm = gsap.matchMedia();
+  mm.add('(prefers-reduced-motion: no-preference)', () => {
+    const lenis = new Lenis({ anchors: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    const tick = (t) => lenis.raf(t * 1000);
+    gsap.ticker.add(tick);
+    gsap.ticker.lagSmoothing(0);
+
+    // Giriş: 40 sayar, kuşak zinciri sırayla belirir, oklar çizilir
+    const num = document.querySelector('[data-count]');
+    const c = { v: 0 };
+    gsap.to(c, { v: 40, duration: 1.6, ease: 'power2.out', onUpdate: () => (num.textContent = Math.round(c.v)) });
+    gsap.from('.hero .eyebrow, .hero .yil, .hero .lead, .scroll-hint', { autoAlpha: 0, y: 24, duration: 0.8, stagger: 0.12, delay: 0.3 });
+    gsap.from('[data-chain]', { autoAlpha: 0, x: -30, duration: 0.6, stagger: 0.35, delay: 1.0, ease: 'power2.out' });
+    gsap.from('.chain .arrow', { scaleX: 0, duration: 0.5, stagger: 0.35, delay: 1.3, ease: 'power2.out' });
+
+    // Eksen çizgisi kaydırdıkça dolar; arkadaki yıl 1986'dan 2026'ya sayar
+    gsap.fromTo('[data-axis-fill]', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.events', start: 'top 60%', end: 'bottom 60%', scrub: 0.4 } });
+    // Arkadaki yıl, kartlardaki yıllarla aynı anda gelir: yılı bilinen kartlar sabit noktadır, aradakiler eşit aralıkla sayılır.
+    const yearEl = document.querySelector('[data-year]');
+    const cards = [...tl.querySelectorAll('[data-event]')];
+    const known = cards.map((el) => Number(el.querySelector('.year').textContent.trim().slice(0, 4)) || null);
+    const years = known.map((v, i) => {
+      if (v) return v;
+      let a = i, b = i;
+      while (a > 0 && !known[a]) a--;
+      while (b < known.length - 1 && !known[b]) b++;
+      return known[a] + ((known[b] - known[a]) * (i - a)) / (b - a);
+    });
+    ScrollTrigger.create({
+      trigger: '.events', start: 'top bottom', end: 'bottom top',
+      onUpdate: () => {
+        const line = window.innerHeight * 0.55;
+        const mids = cards.map((el) => { const r = el.getBoundingClientRect(); return r.top + r.height / 2; });
+        let i = mids.findIndex((m) => m > line);
+        let v;
+        if (i === -1) v = years[years.length - 1];
+        else if (i === 0) v = years[0];
+        else v = years[i - 1] + ((years[i] - years[i - 1]) * (line - mids[i - 1])) / (mids[i] - mids[i - 1]);
+        yearEl.textContent = Math.round(v);
+      },
+    });
+
+    // Bölüm başlıkları ve olay kartları sırayla belirir
+    gsap.utils.toArray('[data-chapter]').forEach((el) => {
+      gsap.from(el, { autoAlpha: 0, y: 40, duration: 0.7, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 82%' } });
+    });
+    gsap.utils.toArray('[data-event]').forEach((el) => {
+      const st = { trigger: el, start: 'top 80%' };
+      gsap.from(el.querySelector('.card'), { autoAlpha: 0, x: 70, duration: 0.8, ease: 'power3.out', scrollTrigger: st });
+      gsap.from(el.querySelector('.node'), { scale: 0, duration: 0.5, ease: 'back.out(2.5)', scrollTrigger: st });
+      gsap.from(el.querySelector('.year'), { autoAlpha: 0, y: 30, duration: 0.6, delay: 0.15, scrollTrigger: st });
+    });
+    gsap.from('.outro > .wrap > *', { autoAlpha: 0, y: 30, duration: 0.7, stagger: 0.1, scrollTrigger: { trigger: '.outro', start: 'top 80%' } });
+
+    return () => { gsap.ticker.remove(tick); lenis.destroy(); };
+  });
+</script>

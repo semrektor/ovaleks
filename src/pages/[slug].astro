@@ -1,0 +1,72 @@
+---
+// Eski sitedeki adresleriyle: kurumsal sayfalar (/hakkimizda/, /iletisim/ …) ve tarif yazıları (/toz-krem-santi-recetesi/ …)
+import Base from '../layouts/Base.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import { corporatePages, recipes, md, plain, hasForm, stripForm, site } from '../lib/catalog.js';
+import tarifBaglantilari from '../data/tarif-baglantilari.json';
+
+export function getStaticPaths() {
+  return [
+    ...corporatePages.map((p) => ({ params: { slug: p.slug }, props: { kind: 'sayfa', item: p } })),
+    ...recipes.map((r) => ({ params: { slug: r.slug }, props: { kind: 'tarif', item: r } })),
+  ];
+}
+
+const { kind, item } = Astro.props;
+const body = stripForm(item.icerik_md).replace(/^#\s+[^\n]*\n+/, '');
+const formPage = hasForm(item.icerik_md);
+const description = plain(body).slice(0, 155).replace(/\s+\S*$/, '') + '…';
+const image = kind === 'tarif' && item.gorsel_yerel ? '/' + item.gorsel_yerel : null;
+// Eski sitedeki Google Haritalar yerleşimi (firmanın kendi "OVALEKS" kaydı) arşivde bağlantı olarak duruyor
+const map = item.icerik_md.match(/\[gömülü içerik \(iframe\)\]\((https:\/\/www\.google\.com\/maps\/embed[^)\s]+)\)/)?.[1];
+const directions = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(`Ovaleks, ${site.adres}`);
+---
+
+<Base title={`${item.baslik} | Ovaleks`} description={description}>
+  <div class="wrap">
+    <div class="page-head">
+      <nav class="crumbs" aria-label="Sayfa yolu">
+        <a href="/">Ana sayfa</a> /
+        {kind === 'tarif' ? <a href="/tarifler/">Tarifler</a> : <span>Kurumsal</span>}
+      </nav>
+      <h1 class="display">{item.baslik}</h1>
+    </div>
+    {image && <img class="cover" src={image} alt={item.baslik} width="1000" height="1000" />}
+    {kind === 'tarif' && <SocialLinks links={tarifBaglantilari[item.slug]} tarif />}
+    <article class="prose" set:html={md(body)} />
+    {
+      map && (
+        <section class="map">
+          <h2 class="display">Konum</h2>
+          <p>{site.adres}</p>
+          <iframe src={map} title="Ovaleks konumu, Google Haritalar" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen />
+          <p class="actions"><a class="btn" href={directions} target="_blank" rel="noopener">Yol tarifi al</a></p>
+        </section>
+      )
+    }
+    {
+      formPage && (
+        <p class="note">
+          Bu sayfadaki form yeni sitede yeniden kurulacak <span class="taslak">taslak</span>. O zamana kadar bize
+          <a href={site.telefonHref}>{site.telefon}</a> numarasından ya da <a href={`mailto:${site.eposta}`}>{site.eposta}</a> adresinden ulaşabilirsiniz.
+        </p>
+      )
+    }
+    {kind === 'tarif' && <p class="cta"><a class="btn ghost" href="/tarifler/">Tüm tarifler</a> <a class="btn" href="/urunler/">Ürünleri incele</a></p>}
+  </div>
+</Base>
+
+<style>
+  .prose { max-width: 820px; padding-bottom: 32px; }
+  .prose :global(img) { border-radius: 14px; margin: 8px 0; max-width: min(100%, 420px); display: inline-block; }
+  .prose :global(ul:has(img)) { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 12px; }
+  .cover { width: min(100%, 420px); border-radius: 22px; border: 1px solid var(--line); background: #fff; margin-bottom: 24px; }
+  .note { max-width: 820px; padding: 18px 22px; border: 1px dashed var(--line); border-radius: 14px; background: var(--paper); }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; padding: 12px 0 80px; }
+  .note, .prose { margin-bottom: 40px; }
+  .map { margin-bottom: 48px; }
+  .map h2 { font-size: clamp(28px, 3.4vw, 44px); margin-bottom: 8px; }
+  .map p { color: var(--muted); }
+  .map iframe { display: block; width: 100%; height: min(60vh, 480px); border: 1px solid var(--line); border-radius: 22px; background: #eee; }
+  .map .actions { margin: 16px 0 0; }
+</style>

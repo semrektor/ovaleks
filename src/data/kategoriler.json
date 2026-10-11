@@ -1,0 +1,562 @@
+[
+  {
+    "id": 455,
+    "ad": "Çikolata Ürünleri",
+    "slug": "cikolata-urunleri",
+    "yol": "Çikolata Ürünleri",
+    "ust_kategori": null,
+    "urun_sayisi": 41,
+    "url": "https://ovaleks.com/urun-kategori/cikolata-urunleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Çikolata Ürünleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Çikolata Ürünleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 489,
+    "ad": "Damla Çikolata",
+    "slug": "damla-cikolata",
+    "yol": "Çikolata Ürünleri > Damla Çikolata",
+    "ust_kategori": "Çikolata Ürünleri",
+    "urun_sayisi": 3,
+    "url": "https://ovaleks.com/urun-kategori/cikolata-urunleri/damla-cikolata/",
+    "aciklama": "",
+    "seo": {
+      "title": "Damla Çikolata – Ovaleks",
+      "meta_description": "",
+      "h1": "Damla Çikolata",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 502,
+    "ad": "Eko Konfiseri",
+    "slug": "eko-konfiseri",
+    "yol": "Çikolata Ürünleri > Eko Konfiseri",
+    "ust_kategori": "Çikolata Ürünleri",
+    "urun_sayisi": 4,
+    "url": "https://ovaleks.com/urun-kategori/cikolata-urunleri/eko-konfiseri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Eko Konfiseri – Ovaleks",
+      "meta_description": "",
+      "h1": "Eko Konfiseri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 501,
+    "ad": "Eko Pralin",
+    "slug": "eko-pralin",
+    "yol": "Çikolata Ürünleri > Eko Pralin",
+    "ust_kategori": "Çikolata Ürünleri",
+    "urun_sayisi": 2,
+    "url": "https://ovaleks.com/urun-kategori/cikolata-urunleri/eko-pralin/",
+    "aciklama": "",
+    "seo": {
+      "title": "Eko Pralin – Ovaleks",
+      "meta_description": "",
+      "h1": "Eko Pralin",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 158,
+    "ad": "Ganaj Sos Çeşitleri",
+    "slug": "ganaj-sos-cesitleri",
+    "yol": "Çikolata Ürünleri > Ganaj Sos Çeşitleri",
+    "ust_kategori": "Çikolata Ürünleri",
+    "urun_sayisi": 2,
+    "url": "https://ovaleks.com/urun-kategori/cikolata-urunleri/ganaj-sos-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Ganaj Sos Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Ganaj Sos Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 475,
+    "ad": "Konfiseri",
+    "slug": "konfiseri",
+    "yol": "Çikolata Ürünleri > Konfiseri",
+    "ust_kategori": "Çikolata Ürünleri",
+    "urun_sayisi": 5,
+    "url": "https://ovaleks.com/urun-kategori/cikolata-urunleri/konfiseri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Konfiseri – Ovaleks",
+      "meta_description": "",
+      "h1": "Konfiseri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 488,
+    "ad": "Parça Çikolata",
+    "slug": "parca-cikolata",
+    "yol": "Çikolata Ürünleri > Parça Çikolata",
+    "ust_kategori": "Çikolata Ürünleri",
+    "urun_sayisi": 7,
+    "url": "https://ovaleks.com/urun-kategori/cikolata-urunleri/parca-cikolata/",
+    "aciklama": "",
+    "seo": {
+      "title": "Parça Çikolata – Ovaleks",
+      "meta_description": "",
+      "h1": "Parça Çikolata",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 466,
+    "ad": "Pralin",
+    "slug": "pralin",
+    "yol": "Çikolata Ürünleri > Pralin",
+    "ust_kategori": "Çikolata Ürünleri",
+    "urun_sayisi": 3,
+    "url": "https://ovaleks.com/urun-kategori/cikolata-urunleri/pralin/",
+    "aciklama": "",
+    "seo": {
+      "title": "Pralin – Ovaleks",
+      "meta_description": "",
+      "h1": "Pralin",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 503,
+    "ad": "Pul Çikolata",
+    "slug": "pul-cikolata",
+    "yol": "Çikolata Ürünleri > Pul Çikolata",
+    "ust_kategori": "Çikolata Ürünleri",
+    "urun_sayisi": 0,
+    "url": "https://ovaleks.com/urun-kategori/cikolata-urunleri/pul-cikolata/",
+    "aciklama": "",
+    "seo": {}
+  },
+  {
+    "id": 162,
+    "ad": "Waffle Sos Çeşitleri",
+    "slug": "waffle-sos-cesitleri",
+    "yol": "Çikolata Ürünleri > Waffle Sos Çeşitleri",
+    "ust_kategori": "Çikolata Ürünleri",
+    "urun_sayisi": 14,
+    "url": "https://ovaleks.com/urun-kategori/cikolata-urunleri/waffle-sos-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Waffle Sos Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Waffle Sos Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 145,
+    "ad": "Dekor ve Kaplama Hamur Çeşitleri",
+    "slug": "dekor-ve-kaplama-hamur-cesitleri",
+    "yol": "Dekor ve Kaplama Hamur Çeşitleri",
+    "ust_kategori": null,
+    "urun_sayisi": 4,
+    "url": "https://ovaleks.com/urun-kategori/dekor-ve-kaplama-hamur-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Dekor ve Kaplama Hamur Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Dekor ve Kaplama Hamur Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 396,
+    "ad": "Model Hamuru Çeşitleri",
+    "slug": "model-hamuru-cesitleri",
+    "yol": "Dekor ve Kaplama Hamur Çeşitleri > Model Hamuru Çeşitleri",
+    "ust_kategori": "Dekor ve Kaplama Hamur Çeşitleri",
+    "urun_sayisi": 2,
+    "url": "https://ovaleks.com/urun-kategori/dekor-ve-kaplama-hamur-cesitleri/model-hamuru-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Model Hamuru Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Model Hamuru Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 146,
+    "ad": "Dondurmacılık Ürünleri",
+    "slug": "dondurmacilik-urunleri",
+    "yol": "Dondurmacılık Ürünleri",
+    "ust_kategori": null,
+    "urun_sayisi": 10,
+    "url": "https://ovaleks.com/urun-kategori/dondurmacilik-urunleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Dondurmacılık Ürünleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Dondurmacılık Ürünleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 399,
+    "ad": "Dondurma Tozu",
+    "slug": "dondurma-tozu",
+    "yol": "Dondurmacılık Ürünleri > Dondurma Tozu",
+    "ust_kategori": "Dondurmacılık Ürünleri",
+    "urun_sayisi": 2,
+    "url": "https://ovaleks.com/urun-kategori/dondurmacilik-urunleri/dondurma-tozu/",
+    "aciklama": "",
+    "seo": {
+      "title": "Dondurma Tozu – Ovaleks",
+      "meta_description": "",
+      "h1": "Dondurma Tozu",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 402,
+    "ad": "Topping Sos Çeşitleri",
+    "slug": "topping-sos-cesitleri",
+    "yol": "Dondurmacılık Ürünleri > Topping Sos Çeşitleri",
+    "ust_kategori": "Dondurmacılık Ürünleri",
+    "urun_sayisi": 6,
+    "url": "https://ovaleks.com/urun-kategori/dondurmacilik-urunleri/topping-sos-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Topping Sos Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Topping Sos Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 15,
+    "ad": "Genel Ürün",
+    "slug": "urun-genel",
+    "yol": "Genel Ürün",
+    "ust_kategori": null,
+    "urun_sayisi": 0,
+    "url": "https://ovaleks.com/urun-kategori/urun-genel/",
+    "aciklama": "",
+    "seo": {}
+  },
+  {
+    "id": 144,
+    "ad": "Pastacılık Jel ve Sos Ürünleri",
+    "slug": "pastacilik-jel-ve-sos-urunleri",
+    "yol": "Pastacılık Jel ve Sos Ürünleri",
+    "ust_kategori": null,
+    "urun_sayisi": 51,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-jel-ve-sos-urunleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Pastacılık Jel ve Sos Ürünleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Pastacılık Jel ve Sos Ürünleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 156,
+    "ad": "Aromalı Dolgu Çeşitleri",
+    "slug": "aromali-dolgu-cesitleri",
+    "yol": "Pastacılık Jel ve Sos Ürünleri > Aromalı Dolgu Çeşitleri",
+    "ust_kategori": "Pastacılık Jel ve Sos Ürünleri",
+    "urun_sayisi": 10,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-jel-ve-sos-urunleri/aromali-dolgu-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Aromalı Dolgu Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Aromalı Dolgu Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 161,
+    "ad": "Dekor Sos Çeşitleri",
+    "slug": "dekor-sos-cesitleri",
+    "yol": "Pastacılık Jel ve Sos Ürünleri > Dekor Sos Çeşitleri",
+    "ust_kategori": "Pastacılık Jel ve Sos Ürünleri",
+    "urun_sayisi": 5,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-jel-ve-sos-urunleri/dekor-sos-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Dekor Sos Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Dekor Sos Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 157,
+    "ad": "Parçacıklı Dolgu Çeşitleri",
+    "slug": "parcacikli-dolgu-cesitleri",
+    "yol": "Pastacılık Jel ve Sos Ürünleri > Parçacıklı Dolgu Çeşitleri",
+    "ust_kategori": "Pastacılık Jel ve Sos Ürünleri",
+    "urun_sayisi": 5,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-jel-ve-sos-urunleri/parcacikli-dolgu-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Parçacıklı Dolgu Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Parçacıklı Dolgu Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 154,
+    "ad": "Pasta Jeli Çeşitleri",
+    "slug": "pasta-jeli-cesitleri",
+    "yol": "Pastacılık Jel ve Sos Ürünleri > Pasta Jeli Çeşitleri",
+    "ust_kategori": "Pastacılık Jel ve Sos Ürünleri",
+    "urun_sayisi": 14,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-jel-ve-sos-urunleri/pasta-jeli-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Pasta Jeli Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Pasta Jeli Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 155,
+    "ad": "Pasta Simli Jel Çeşitleri",
+    "slug": "pasta-simli-jel-cesitleri",
+    "yol": "Pastacılık Jel ve Sos Ürünleri > Pasta Simli Jel Çeşitleri",
+    "ust_kategori": "Pastacılık Jel ve Sos Ürünleri",
+    "urun_sayisi": 4,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-jel-ve-sos-urunleri/pasta-simli-jel-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Pasta Simli Jel Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Pasta Simli Jel Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 159,
+    "ad": "Pasta Sosu Çeşitleri",
+    "slug": "pasta-sosu-cesitleri",
+    "yol": "Pastacılık Jel ve Sos Ürünleri > Pasta Sosu Çeşitleri",
+    "ust_kategori": "Pastacılık Jel ve Sos Ürünleri",
+    "urun_sayisi": 3,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-jel-ve-sos-urunleri/pasta-sosu-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Pasta Sosu Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Pasta Sosu Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 438,
+    "ad": "Pastacılık Karışımı",
+    "slug": "pastacilik-karisimi",
+    "yol": "Pastacılık Karışımı",
+    "ust_kategori": null,
+    "urun_sayisi": 7,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-karisimi/",
+    "aciklama": "",
+    "seo": {
+      "title": "Pastacılık Karışımı – Ovaleks",
+      "meta_description": "",
+      "h1": "Pastacılık Karışımı",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 142,
+    "ad": "Pastacılık Katkı Ürünleri",
+    "slug": "pastacilik-katki-urunleri",
+    "yol": "Pastacılık Katkı Ürünleri",
+    "ust_kategori": null,
+    "urun_sayisi": 2,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-katki-urunleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Pastacılık Katkı Ürünleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Pastacılık Katkı Ürünleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 143,
+    "ad": "Pastacılık Toz Ürünleri",
+    "slug": "pastacilik-toz-urunleri",
+    "yol": "Pastacılık Toz Ürünleri",
+    "ust_kategori": null,
+    "urun_sayisi": 34,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-toz-urunleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Pastacılık Toz Ürünleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Pastacılık Toz Ürünleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 148,
+    "ad": "Hazır Kek Karışım Çeşitleri",
+    "slug": "hazir-kek-karisim-cesitleri",
+    "yol": "Pastacılık Toz Ürünleri > Hazır Kek Karışım Çeşitleri",
+    "ust_kategori": "Pastacılık Toz Ürünleri",
+    "urun_sayisi": 6,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-toz-urunleri/hazir-kek-karisim-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Hazır Kek Karışım Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Hazır Kek Karışım Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 153,
+    "ad": "Kek Karışım Çeşitleri",
+    "slug": "kek-karisim-cesitleri",
+    "yol": "Pastacılık Toz Ürünleri > Hazır Kek Karışım Çeşitleri > Kek Karışım Çeşitleri",
+    "ust_kategori": "Hazır Kek Karışım Çeşitleri",
+    "urun_sayisi": 6,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-toz-urunleri/hazir-kek-karisim-cesitleri/kek-karisim-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Kek Karışım Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Kek Karışım Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 152,
+    "ad": "Waffle & Pancake",
+    "slug": "waffle-pancake",
+    "yol": "Pastacılık Toz Ürünleri > Hazır Kek Karışım Çeşitleri > Waffle & Pancake",
+    "ust_kategori": "Hazır Kek Karışım Çeşitleri",
+    "urun_sayisi": 0,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-toz-urunleri/hazir-kek-karisim-cesitleri/waffle-pancake/",
+    "aciklama": "",
+    "seo": {}
+  },
+  {
+    "id": 147,
+    "ad": "Hazır Toz Karışım Çeşitleri",
+    "slug": "hazir-toz-karisim-cesitleri",
+    "yol": "Pastacılık Toz Ürünleri > Hazır Toz Karışım Çeşitleri",
+    "ust_kategori": "Pastacılık Toz Ürünleri",
+    "urun_sayisi": 11,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-toz-urunleri/hazir-toz-karisim-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Hazır Toz Karışım Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Hazır Toz Karışım Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 149,
+    "ad": "Toz Jel",
+    "slug": "toz-jel",
+    "yol": "Pastacılık Toz Ürünleri > Hazır Toz Karışım Çeşitleri > Toz Jel",
+    "ust_kategori": "Hazır Toz Karışım Çeşitleri",
+    "urun_sayisi": 1,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-toz-urunleri/hazir-toz-karisim-cesitleri/toz-jel/",
+    "aciklama": "",
+    "seo": {
+      "title": "Toz Jel – Ovaleks",
+      "meta_description": "",
+      "h1": "Toz Jel",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 434,
+    "ad": "Kadife (Velvet) Kek Çeşitleri",
+    "slug": "kadife-velvet-kek-cesitleri",
+    "yol": "Pastacılık Toz Ürünleri > Kadife (Velvet) Kek Çeşitleri",
+    "ust_kategori": "Pastacılık Toz Ürünleri",
+    "urun_sayisi": 5,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-toz-urunleri/kadife-velvet-kek-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Kadife (Velvet) Kek Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Kadife (Velvet) Kek Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 150,
+    "ad": "Pandispanya Çeşitleri",
+    "slug": "pandispanya-cesitleri",
+    "yol": "Pastacılık Toz Ürünleri > Pandispanya Çeşitleri",
+    "ust_kategori": "Pastacılık Toz Ürünleri",
+    "urun_sayisi": 2,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-toz-urunleri/pandispanya-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Pandispanya Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Pandispanya Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  },
+  {
+    "id": 151,
+    "ad": "Şarlot Toz Çeşitleri",
+    "slug": "sarlot-toz-cesitleri",
+    "yol": "Pastacılık Toz Ürünleri > Şarlot Toz Çeşitleri",
+    "ust_kategori": "Pastacılık Toz Ürünleri",
+    "urun_sayisi": 4,
+    "url": "https://ovaleks.com/urun-kategori/pastacilik-toz-urunleri/sarlot-toz-cesitleri/",
+    "aciklama": "",
+    "seo": {
+      "title": "Şarlot Toz Çeşitleri – Ovaleks",
+      "meta_description": "",
+      "h1": "Şarlot Toz Çeşitleri",
+      "canonical": "",
+      "robots": "max-image-preview:large"
+    }
+  }
+]

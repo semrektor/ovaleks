@@ -1,0 +1,99 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { products, topCategories, inCategory, categoryUrl } from '../../lib/catalog.js';
+---
+
+<Base title="Tüm Ürünler | Ovaleks Pastacılık Malzemeleri" description={`Ovaleks pastacılık malzemeleri: waffle sosları, pasta jelleri, kek karışımları, krem şanti ve çikolata ürünleri. ${products.length} ürün, üretici firmadan toptan.`}>
+  <div class="wrap">
+    <div class="page-head">
+      <nav class="crumbs" aria-label="Sayfa yolu"><a href="/">Ana sayfa</a> / Ürünler</nav>
+      <h1 class="display">Tüm ürünler</h1>
+      <!-- Yazdıkça aşağıdaki liste süzülür; ?q=… ile gelindiğinde arama hazır açılır -->
+      <form class="filter" role="search" data-filter>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+        <input type="search" name="q" placeholder="Ürün adı, aroma ya da ürün kodu ile arayın" aria-label="Ürünlerde ara" autocomplete="off" enterkeyhint="search" />
+        <button type="reset" hidden>Temizle</button>
+      </form>
+      <p class="filter-status" data-filter-status aria-live="polite" hidden></p>
+      <div class="chips" data-chips>{topCategories.map((c) => <a class="chip" href={`#${c.slug}`}>{c.ad} ({inCategory(c).length})</a>)}</div>
+    </div>
+    {
+      topCategories.map((c) => (
+        <section id={c.slug} data-group>
+          <h2 class="display"><a href={categoryUrl(c)}>{c.ad}</a></h2>
+          <div class="grid">{inCategory(c).map((p) => <ProductCard product={p} />)}</div>
+        </section>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  section { padding: 28px 0 44px; scroll-margin-top: 80px; }
+  section h2 { font-size: clamp(26px, 3vw, 40px); margin-bottom: 18px; }
+  section h2 a { text-decoration: none; }
+  section h2 a:hover { color: var(--red); }
+  .filter { display: flex; align-items: center; gap: 12px; max-width: 620px; margin: 18px 0 6px; padding: 6px 8px 6px 18px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--paper); transition: border-color 0.2s; }
+  .filter:focus-within { border-color: var(--red); }
+  .filter svg { width: 20px; height: 20px; flex: none; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; }
+  .filter input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 16px; color: inherit; padding: 10px 0; }
+  .filter input::-webkit-search-cancel-button { display: none; }
+  .filter button { flex: none; padding: 8px 14px; border: 0; border-radius: 999px; background: #f4ece0; font: inherit; font-size: 13px; font-weight: 600; color: var(--ink); cursor: pointer; }
+  .filter-status { margin: 10px 0 0; color: var(--muted); }
+  .filter-status :global(a) { color: var(--red); font-weight: 600; }
+</style>
+
+<script>
+  import { yukle, bul } from '../../scripts/arama.js';
+
+  const form = document.querySelector('[data-filter]');
+  const input = form.querySelector('input');
+  const reset = form.querySelector('button');
+  const status = document.querySelector('[data-filter-status]');
+  const chips = document.querySelector('[data-chips]');
+  const groups = [...document.querySelectorAll('[data-group]')];
+
+  async function suz() {
+    const q = input.value.trim();
+    const index = await yukle();
+    const eslesen = q ? new Set(bul(index, q).map((u) => u.url)) : null;
+    const gosterilen = new Set(); // birden çok grupta yer alan ürün arama sonucunda bir kez görünür
+    for (const g of groups) {
+      let dolu = false;
+      for (const card of g.querySelectorAll('a.card')) {
+        const href = card.getAttribute('href');
+        const gorunur = !eslesen || (eslesen.has(href) && !gosterilen.has(href));
+        if (eslesen && gorunur) gosterilen.add(href);
+        card.hidden = !gorunur;
+        dolu ||= gorunur;
+      }
+      g.hidden = !dolu;
+    }
+    reset.hidden = !q;
+    chips.hidden = !!q;
+    status.hidden = !q;
+    if (q) {
+      status.textContent = eslesen.size ? `“${q}” için ${eslesen.size} ürün bulundu.` : `“${q}” için ürün bulunamadı. Başka bir kelime deneyin ya da `;
+      if (!eslesen.size) {
+        const a = document.createElement('a');
+        a.href = '/iletisim/';
+        a.textContent = 'bize sorun';
+        status.append(a, '.');
+      }
+    }
+    // Adres çubuğu aramayla eşleşir: bağlantı paylaşılınca aynı liste açılır
+    const url = new URL(location.href);
+    q ? url.searchParams.set('q', q) : url.searchParams.delete('q');
+    history.replaceState(null, '', url);
+  }
+
+  input.addEventListener('input', suz);
+  form.addEventListener('submit', (e) => { e.preventDefault(); input.blur(); });
+  form.addEventListener('reset', () => setTimeout(suz));
+  const ilk = new URLSearchParams(location.search).get('q');
+  if (ilk) {
+    input.value = ilk;
+    suz();
+  }
+</script>

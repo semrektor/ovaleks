@@ -1,0 +1,606 @@
+---
+import Base from '../../../../layouts/Base.astro';
+import LeadSection from '../../../../components/LeadSection.astro';
+import ProductCard from '../../../../components/ProductCard.astro';
+import { stageFlavors as F, products, categories, inCategory, site } from '../../../../lib/catalog.js';
+
+// Bu sayfa eski sitedeki waffle sos kategorisinin adresinde durur; vitrin animasyonunun altında ürün listesi vardır.
+const waffleProducts = inCategory(categories.find((c) => c.slug === 'waffle-sos-cesitleri'));
+
+const offsets = [-3, -2, -1, 0, 1, 2, 3];
+const at = (o) => F[(((o % F.length) + F.length) % F.length)];
+const f0 = F[0];
+const faq = [
+  ['Waffle sosları nasıl saklanır?', '+18 °C ile +24 °C arasında, serin ve kokusuz bir yerde saklanır. Işık, hava, nem ve aşırı sıcaklık değişimlerinden korunmalı, her kullanımdan sonra ambalaj kapalı tutulmalıdır. Buzdolabına konmaz.'],
+  ['Kullanmadan önce ne yapmalıyım?', 'Kullanmadan önce mutlaka karıştırın veya çalkalayın. Sunum tercihinize göre istediğiniz miktarda kullanabilirsiniz.'],
+  ['Alerjen içeriyor mu?', 'Tüm waffle sosları süt ve süt ürünleri içerir. Eser miktarda yumurta, glüten ve sert kabuklu yemiş içerebilir. Her ürünün içindekiler listesi ve alerjen bilgisi kendi sayfasında yer alır.'],
+  ['Hangi ambalajlarda satılıyor?', 'Her aroma 10 kg plastik kova ve 1 kg plastik şişe olarak üretilir.'],
+];
+const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) };
+---
+
+<Base
+  theme="dark"
+  title="Waffle Sos Çeşitleri: Toptan Waffle Sosu Üreticisi | Ovaleks"
+  description="Ovaleks waffle, krep ve pankek sosları: 7 aroma, 10 kg kova ve 1 kg şişe. 1986’dan beri pastacılık profesyonellerine üretim yapan firmadan toptan teklif ve numune alın."
+  jsonLd={faqLd}
+>
+  <!-- VİTRİN: aroma seçimi + kaydırmaya bağlı sahneler -->
+  <section class="xp" data-xp style={`--sauce:${f0.sos}`}>
+    <div class="flood" aria-hidden="true"></div>
+    <!-- Sos damlaları: şekli JS üretir, rengi seçili aromanın etiketinden okunan sos rengidir -->
+    <svg class="sauce" data-sauce aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="goo" color-interpolation-filters="sRGB" x="-5%" y="-20%" width="110%" height="140%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="9" />
+          <feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10" />
+        </filter>
+      </defs>
+    </svg>
+    <!-- Parlak damlalar ve sos dalgaları burada gerçek zamanlı çizilir; WebGL yoksa üstteki SVG damlalar kalır -->
+    <canvas class="fx" data-fx aria-hidden="true"></canvas>
+    <div class="ghost display" aria-hidden="true">Üreticiden</div>
+
+    <div class="intro" data-intro>
+      <p class="eyebrow">Toptan waffle · krep · pankek sosu</p>
+      <h1 class="display">Waffle sosunu <em>üreticisinden</em> alın.</h1>
+    </div>
+
+    <div class="row" data-row>
+      {
+        offsets.map((o) => (
+          <button type="button" class="slot" data-slot={o} style={`--i:${o};--d:${Math.abs(o)}`} title={at(o).ad} aria-label={`${at(o).ad} aromasını seç`}>
+            <img src={at(o).sise} alt={o === 0 ? `Ovaleks ${at(o).ad} waffle sos 1 kg şişe` : ''} width="1000" height="1000" fetchpriority={o === 0 ? 'high' : 'auto'} />
+          </button>
+        ))
+      }
+    </div>
+    <div class="pedestal" aria-hidden="true"></div>
+
+    <div class="picker" data-picker>
+      <button type="button" data-prev aria-label="Önceki aroma">‹</button>
+      <div class="name"><span class="display" data-f="ad">{f0.ad}</span><small>waffle sos</small></div>
+      <button type="button" data-next aria-label="Sonraki aroma">›</button>
+      <p class="hint"><span class="hint-touch">Aroma değiştirmek için şişeyi sağa sola kaydırın</span><span class="hint-mouse">Şişelerin üzerine gelerek aroma seçin, sonra aşağı kaydırın ↓</span></p>
+    </div>
+
+    <img class="kova-big" data-kova src={f0.kova} alt="" width="1000" height="1000" loading="lazy" />
+
+    <div class="panels">
+      <article class="panel" data-panel>
+        <p class="eyebrow">Ovaleks waffle sos</p>
+        <h2 class="display"><span data-f="ad">{f0.ad}</span></h2>
+        <p><span data-f="not">{f0.not}</span>. Waffle, krep, pankek ve tabak süslemede kullanılır.</p>
+      </article>
+      <article class="panel" data-panel>
+        <p class="eyebrow">Tek sos, dört kullanım</p>
+        <h2 class="display">Waffle<br />Krep<br />Pankek</h2>
+        <p>Pişmiş waffle’ın üzerine gezdirin, kreplere ekleyin, pankek kulesinin tepesinden akıtın ya da tabağı sos çizgileriyle süsleyin.</p>
+      </article>
+      <article class="panel" data-panel>
+        <p class="eyebrow">İşletmenize göre ambalaj</p>
+        <h2 class="display">10 kg kova<br />1 kg şişe</h2>
+        <p>Düzenli sos tüketimi olan mutfaklar için kova, servis tezgâhı için şişe.</p>
+        <div class="variants">
+          <a data-f-href="kovaUrl" href={f0.kovaUrl}><b>10 kg kova</b><span>Kod <i data-f="kovaKod">{f0.kovaKod}</i></span></a>
+          <a data-f-href="siseUrl" href={f0.siseUrl}><b>1 kg şişe</b><span>Kod <i data-f="siseKod">{f0.siseKod}</i></span></a>
+        </div>
+      </article>
+      <article class="panel center" data-panel>
+        <h2 class="display">Aracıdan değil, üreticiden.</h2>
+        <p>1986’dan beri pastacılık profesyonelleri için üretiyoruz. Soslar İstanbul Avcılar’daki tesiste, Türk Gıda Kodeksi’ne uygun olarak üretilir.</p>
+        <a class="btn" href="#teklif">Toptan teklif al</a>
+      </article>
+    </div>
+
+    <div class="lineup" data-lineup>
+      <div class="cans">
+        {F.map((f) => <a href={f.kovaUrl} title={`${f.ad} waffle sos`}><img src={f.kova} alt={`Ovaleks ${f.ad} waffle sos 10 kg kova`} width="1000" height="1000" loading="lazy" /></a>)}
+      </div>
+      <h2 class="display">7 aroma. 2 ambalaj.<br />Tek tedarikçi.</h2>
+      <div class="actions">
+        <a class="btn" href="#teklif">Numune iste</a>
+        <a class="btn ghost" href="#urunler">Tüm waffle sosları</a>
+      </div>
+    </div>
+
+    <div class="steps" aria-hidden="true">{[0, 1, 2, 3, 4, 5].map(() => <i data-step />)}</div>
+  </section>
+  <script is:inline type="application/json" id="xp-data" set:html={JSON.stringify(F)} />
+
+  <!-- KULLANIM: servis görselleri -->
+  <section class="uses">
+    <div class="wrap">
+      <p class="eyebrow">Tek sos, dört kullanım</p>
+      <h2 class="display">Menünüzdeki her tatlı tabağına.</h2>
+      <div class="use-grid">
+        {
+          [
+            ['servis-waffle', 'Waffle', 'Pişmiş waffle’ın üzerine gezdirerek sade, meyveli veya farklı soslarla hazırlanan sunumlarda.'],
+            ['servis-krep', 'Krep', 'Katlanmış ya da rulo yapılmış kreplerin üzerine sos olarak.'],
+            ['servis-pankek', 'Pankek', 'Tek porsiyon veya üst üste dizilmiş pankeklerin üzerine.'],
+            ['servis-tabak', 'Tabak süsleme', 'Sos çizgileri ve küçük dokunuşlarla; koyu ve beyaz sosları birlikte kullanarak.'],
+          ].map(([file, ad, metin]) => (
+            <figure data-reveal>
+              <img src={`/gorseller/servis/${file}.webp`} alt={`${ad} üzerinde waffle sos sunumu`} width="1280" height="853" loading="lazy" decoding="async" />
+              <figcaption><h3 class="display">{ad}</h3><p>{metin}</p></figcaption>
+            </figure>
+          ))
+        }
+      </div>
+      <p class="temsili">Görseller temsilidir <span class="taslak">gerçek çekimle değişecek</span></p>
+    </div>
+  </section>
+
+  <!-- NEDEN OVALEKS -->
+  <section class="why" id="neden">
+    <div class="wrap">
+      <p class="eyebrow">Neden Ovaleks</p>
+      <h2 class="display">Sosu üretenden almanın beş nedeni.</h2>
+      <div class="why-grid">
+        <div data-reveal>
+          <span class="big display">1986</span>
+          <h3>Pasta ustasının kurduğu firma</h3>
+          <p>Ustalar Gıda, 1986’da pasta ustası Burhanettin Dar tarafından kuruldu. Ovaleks markasıyla o günden beri profesyonel mutfaklar için üretiyor.</p>
+        </div>
+        <div data-reveal>
+          <span class="big display">Üretici</span>
+          <h3>Aracı değil, üretim yapan firma</h3>
+          <p>Soslar İstanbul Avcılar’daki tesiste, Türk Gıda Kodeksi’ne uygun olarak üretilir. İşletme kayıt numarası: {site.kayitNo}.</p>
+        </div>
+        <div data-reveal>
+          <span class="big display">{products.length}</span>
+          <h3>Tek tedarikçiden tüm tatlı menüsü</h3>
+          <p>Waffle soslarının yanında pasta jeli, kek karışımı, krem şanti, dolgu ve çikolata ürünleri: {products.length} ürünlük profesyonel yelpaze.</p>
+        </div>
+        <div data-reveal>
+          <span class="big display">2 boy</span>
+          <h3>İşletmenize göre ambalaj</h3>
+          <p>Düzenli sos tüketimi olan mutfaklar için 10 kg kova, servis tezgâhı için 1 kg şişe. Her aromada ikisi de var.</p>
+        </div>
+        <div data-reveal>
+          <span class="big display">Destek</span>
+          <h3>Satış öncesi ve sonrası hizmet</h3>
+          <p>Pastacılık, catering ve HoReCa işletmelerine satış öncesinde ve sonrasında hizmet veriyoruz.</p>
+        </div>
+        <div data-reveal class="terms">
+          <h3>Toptan koşullar</h3>
+          <ul>
+            <li>Minimum sipariş <span class="taslak">teyit edilecek</span></li>
+            <li>Numune gönderimi <span class="taslak">teyit edilecek</span></li>
+            <li>Sevkiyat süresi ve bölgeler <span class="taslak">teyit edilecek</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÜRÜN LİSTESİ -->
+  <section class="products" id="urunler">
+    <div class="wrap">
+      <p class="eyebrow">Waffle sos çeşitleri</p>
+      <h2 class="display">{waffleProducts.length} ürün, 7 aroma.</h2>
+      <div class="grid">{waffleProducts.map((p) => <ProductCard product={p} />)}</div>
+    </div>
+  </section>
+
+  <!-- SSS -->
+  <section class="faq">
+    <div class="wrap faq-grid">
+      <div>
+        <p class="eyebrow">Sık sorulanlar</p>
+        <h2 class="display">Merak edilenler.</h2>
+      </div>
+      <div class="qa">
+        {faq.map(([q, a], i) => <details open={i === 0} data-reveal><summary>{q}</summary><p>{a}</p></details>)}
+      </div>
+    </div>
+  </section>
+
+  <LeadSection />
+</Base>
+
+<style>
+  section { position: relative; }
+  h2.display { font-size: clamp(36px, 5.4vw, 80px); margin: 10px 0 0; }
+  .lead { font-size: clamp(17px, 1.6vw, 20px); max-width: 52ch; }
+
+  /* ---------- VİTRİN: sabit olmayan (telefon / hareket kapalı) düzen ---------- */
+  /* Zemin rengi de sos renginden türetilir; böylece damla ile zemin aynı tonun açığı ve koyusu olur. */
+  .xp { --fc: color-mix(in srgb, var(--sauce) 52%, #000); isolation: isolate; }
+  .xp .flood { z-index: -2; }
+  .sauce { position: absolute; left: 0; top: 0; z-index: -1; pointer-events: none; overflow: visible; transform-origin: 0 0; scale: 0.62; }
+  /* Damlalar JS ile üretildiği için :global gerekir */
+  .sauce :global(.band), .sauce :global(.drip) { fill: var(--sauce); transition: fill 0.35s; }
+  .sauce :global(.hi) { fill: #fff; opacity: 0.2; }
+  .fx { position: absolute; left: 0; top: 0; width: 100%; height: 560px; z-index: -1; pointer-events: none; }
+  .xp.is-live .fx { height: 100%; }
+  .xp.has-fx .sauce { display: none; }
+  .xp:not(.is-live) .sauce { top: 14px; } /* küçültülmüş şerit sabit menünün hemen altında bitsin */
+  .xp.is-live .sauce { display: none; } /* masaüstünde damla yok */
+  .xp { padding: 96px var(--gutter) 56px; background: radial-gradient(90% 60% at 50% 38%, #3a2018 0%, #1a0d0a 55%, #120907 100%); overflow: hidden; text-align: center; }
+  .flood, .ghost, .pedestal, .steps { display: none; }
+  .intro h1 { font-size: clamp(38px, 9vw, 64px); margin: 10px auto 0; max-width: 14ch; }
+  .intro h1 em { font-style: normal; color: var(--red); }
+  .row { display: flex; justify-content: center; align-items: center; margin: 12px auto 0; max-width: 520px; }
+  .slot { all: unset; cursor: pointer; flex: 0 0 34%; display: none; }
+  .slot img { width: 100%; filter: brightness(0.45); transition: filter 0.3s; }
+  .slot[data-slot='-1'], .slot[data-slot='0'], .slot[data-slot='1'] { display: block; }
+  .slot[data-slot='0'] { flex-basis: 58%; margin-inline: -12%; z-index: 1; position: relative; }
+  .slot[data-slot='0'] img { filter: none; }
+  .picker { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; max-width: 420px; margin: 0 auto; }
+  .picker button { all: unset; cursor: pointer; width: 46px; height: 46px; border: 2px solid rgba(255, 255, 255, 0.4); border-radius: 50%; font-size: 26px; line-height: 44px; text-align: center; transition: background 0.2s, color 0.2s; }
+  .picker button:hover { background: #fff; color: #120907; }
+  .picker .name span { display: block; font-size: clamp(34px, 5vw, 60px); }
+  .picker .name, .picker .hint, .intro, .panel, .lineup h2 { text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55); } /* açık renkli sos dalgasının üstünde okunaklı kalsın */
+  .picker .name small { letter-spacing: 0.2em; text-transform: uppercase; font-size: 12px; opacity: 0.7; }
+  .picker .hint { grid-column: 1 / -1; font-size: 13px; opacity: 0.6; margin: 10px 0 0; }
+  .hint-mouse { display: none; }
+  @media (hover: hover) and (pointer: fine) {
+    .hint-mouse { display: inline; }
+    .hint-touch { display: none; }
+  }
+  .row { touch-action: pan-y; }
+  .kova-big { width: min(74%, 380px); margin: 30px auto 0; }
+  .panels { display: grid; gap: 14px; margin-top: 26px; text-align: left; }
+  .panel { background: color-mix(in srgb, var(--fc) 78%, #000); border-radius: 22px; padding: 26px 24px; color: #fff; }
+  .panel .eyebrow { color: #fff; opacity: 0.8; }
+  .panel h2 { font-size: clamp(38px, 9vw, 60px); margin: 8px 0 14px; }
+  .panel p { margin: 0 0 14px; max-width: 44ch; }
+  .variants { display: flex; flex-wrap: wrap; gap: 10px; }
+  .variants a { display: grid; padding: 10px 18px; border: 2px solid currentColor; border-radius: 14px; text-decoration: none; transition: background 0.2s, color 0.2s; }
+  .variants a:hover { background: #fff; color: #120907; border-color: #fff; }
+  .variants span { font-size: 12px; opacity: 0.85; }
+  .variants i { font-style: normal; }
+  .lineup { margin-top: 44px; }
+  .lineup .cans { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; max-width: 560px; margin: 0 auto 18px; }
+  .lineup h2 { font-size: clamp(34px, 8vw, 56px); }
+  .lineup .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 22px; }
+
+  /* ---------- VİTRİN: sabitlenen sahne (JS geniş ekranda .is-live ekler) ---------- */
+  .xp.is-live { height: 100vh; padding: 0; text-align: left; }
+  .xp.is-live .flood { display: block; position: absolute; inset: 0; opacity: 0; background: radial-gradient(70% 70% at 64% 46%, color-mix(in srgb, var(--fc) 82%, #fff) 0%, var(--fc) 42%, color-mix(in srgb, var(--fc) 42%, #000) 100%); }
+  .xp.is-live .ghost { display: grid; place-items: center; position: absolute; inset: 0; font-size: clamp(120px, 21vw, 340px); white-space: nowrap; color: #fff; opacity: 0; pointer-events: none; }
+  .xp.is-live .intro { position: absolute; left: 0; right: 0; top: 92px; text-align: center; padding-inline: var(--gutter); }
+  .xp.is-live .intro h1 { font-size: clamp(34px, 4.4vw, 68px); max-width: none; }
+  .xp.is-live .row { position: absolute; inset: 0; margin: 0; max-width: none; display: block; pointer-events: none; }
+  .xp.is-live .slot { display: block; position: absolute; left: calc(50% + var(--i) * 13.5vw); top: 60%; width: min(46vh, 30vw); margin: 0; translate: -50% -50%; rotate: calc(var(--i) * 7deg); scale: calc(1 - var(--d) * 0.1); pointer-events: auto; clip-path: inset(8% 34%); z-index: calc(4 - var(--d)); opacity: calc(1 - var(--d) * 0.22); }
+  .xp.is-live .slot img { filter: brightness(0.38) saturate(0.8); }
+  .xp.is-live .slot:hover img { filter: brightness(0.75); }
+  .xp.is-live .slot[data-slot='0'] { scale: 1.14; clip-path: none; pointer-events: none; opacity: 1; }
+  .xp.is-live .slot[data-slot='0'] img { filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.55)); }
+  .xp.is-live .pedestal { display: block; position: absolute; left: 50%; top: calc(60% + 19vh); width: 30vh; height: 5vh; translate: -50% -50%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--sauce) 85%, #fff) 0%, color-mix(in srgb, var(--sauce) 60%, transparent) 45%, transparent 100%); filter: blur(6px); }
+  /* Not: GSAP'in hareket ettirdiği öğelerde CSS translate/rotate/scale kullanılmıyor; ortalama left/right/flex ile yapılıyor. */
+  .xp.is-live:not(.is-moving) .slot[data-slot='0'] { animation: bob 4.8s ease-in-out infinite; }
+  @keyframes bob { 50% { top: 58.7%; } }
+  .xp.is-live .picker { position: absolute; left: 0; right: 0; bottom: 18px; margin-inline: auto; width: min(560px, 90vw); text-align: center; }
+  .xp.is-live .picker .name span { font-size: clamp(28px, 3.2vw, 46px); white-space: nowrap; }
+  .xp.is-live .picker .hint { margin-top: 4px; }
+  .xp.is-live .kova-big { position: absolute; margin: 0; width: min(56vh, 34vw); left: 44%; top: calc(52% - min(28vh, 17vw)); opacity: 0; filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.45)); pointer-events: none; }
+  .xp.is-live .panels { position: absolute; inset: 0; margin: 0; display: block; pointer-events: none; }
+  .xp.is-live .panel { position: absolute; left: clamp(24px, 6vw, 96px); top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; width: min(34vw, 460px); background: none; padding: 40px 0 0; border-radius: 0; opacity: 0; }
+  .xp.is-live .panel.on { pointer-events: auto; }
+  .xp.is-live .panel h2 { font-size: clamp(48px, 6.2vw, 104px); }
+  .xp.is-live .panel p { font-size: 18px; }
+  .xp.is-live .panel.center { left: 0; right: 0; margin-inline: auto; width: min(92vw, 720px); justify-content: flex-end; align-items: center; text-align: center; padding: 0 0 6vh; }
+  .xp.is-live .panel.center h2 { font-size: clamp(32px, 3.8vw, 56px); }
+  .xp.is-live .panel.center p { max-width: 56ch; }
+  .xp.is-live .lineup { position: absolute; inset: 0; margin: 0; display: grid; align-content: center; justify-items: center; text-align: center; opacity: 0; pointer-events: none; padding-top: 60px; }
+  .xp.is-live .lineup.on { pointer-events: auto; }
+  .xp.is-live .lineup .cans { display: flex; justify-content: center; max-width: none; margin: 0 0 2vh; }
+  .xp.is-live .lineup .cans a { width: 15.5vw; margin-inline: -1.7vw; }
+  .xp.is-live .lineup .cans img { transition: translate 0.25s; }
+  .xp.is-live .lineup .cans a:hover img { translate: 0 -12px; }
+  .xp.is-live .lineup h2 { font-size: clamp(34px, 4.6vw, 72px); }
+  .xp.is-live .steps { display: grid; gap: 9px; position: absolute; right: 22px; top: 50%; translate: 0 -50%; }
+  .steps i { width: 8px; height: 8px; border-radius: 50%; background: #fff; opacity: 0.3; transition: opacity 0.2s, scale 0.2s; }
+  .steps i.on { opacity: 1; scale: 1.5; }
+
+  /* ---------- KULLANIM ---------- */
+  .uses { padding: clamp(64px, 9vw, 120px) 0; }
+  .use-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 40px; }
+  .use-grid figure { margin: 0; border-radius: 20px; overflow: hidden; background: #1c110d; border: 1px solid #3a2a22; }
+  .use-grid img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .use-grid figcaption { padding: 18px 20px 22px; }
+  .use-grid h3 { font-size: 30px; color: #fff; margin-bottom: 8px; }
+  .use-grid p { margin: 0; color: #cdbba8; }
+  .temsili { margin: 18px 0 0; font-size: 13px; color: #b9a797; }
+  @media (max-width: 1000px) { .use-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .use-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- NEDEN ---------- */
+  .why { background: var(--choco); padding: clamp(64px, 9vw, 130px) 0; }
+  .why h2 { max-width: 18ch; }
+  .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 48px; }
+  .why-grid > div { border: 1px solid #4a342a; border-radius: 20px; padding: 26px; background: #33201a; }
+  .why-grid .big { display: block; font-size: clamp(44px, 5vw, 72px); color: #fff; margin-bottom: 14px; }
+  .why-grid h3 { font-size: 18px; color: #fff; margin-bottom: 8px; }
+  .why-grid p { color: #cdbba8; margin: 0; }
+  .why-grid .terms { background: transparent; border-style: dashed; }
+  .why-grid .terms ul { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; color: #cdbba8; }
+  @media (max-width: 900px) { .why-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- ÜRÜN LİSTESİ ---------- */
+  .products { padding: clamp(64px, 9vw, 120px) 0 0; scroll-margin-top: 70px; }
+  .products .grid { margin-top: 40px; color: var(--ink); }
+
+  /* ---------- SSS ---------- */
+  .faq { padding: clamp(64px, 9vw, 120px) 0; }
+  .faq-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(24px, 5vw, 72px); }
+  .qa { display: grid; gap: 10px; }
+  .qa details { border: 1px solid #3a2a22; border-radius: 16px; padding: 18px 22px; background: #1c110d; }
+  .qa summary { cursor: pointer; font-weight: 700; font-size: 18px; color: #fff; }
+  .qa p { margin: 12px 0 0; color: #cdbba8; }
+  @media (max-width: 900px) { .faq-grid { grid-template-columns: 1fr; } }
+
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import Lenis from 'lenis';
+  import { createSauceFx } from '../../../../scripts/sauce-fx.js';
+
+  gsap.registerPlugin(ScrollTrigger);
+  const mm = gsap.matchMedia();
+  let lenis = null;
+
+  // ---------- Aroma seçimi (her ekranda çalışır) ----------
+  const xp = document.querySelector('[data-xp]');
+  const F = JSON.parse(document.getElementById('xp-data').textContent);
+  const slots = [...xp.querySelectorAll('[data-slot]')];
+  const row = xp.querySelector('[data-row]');
+  const kova = xp.querySelector('[data-kova]');
+  const mod = (n) => ((n % F.length) + F.length) % F.length;
+  let cur = 0;
+  let locked = false; // sahne ilerlediyse seçim kapalı
+
+  // ---------- Sos damlaları ----------
+  // Üst kenardan sarkan damlalar; uzunlukları sahneye göre değişir. Sabit tohumlu rastgelelik: her açılışta aynı dizilim.
+  const sauce = xp.querySelector('[data-sauce]');
+  const BAND = 92; // üst şerit, sabit menünün arkasında kalır
+  const SVG = 'http://www.w3.org/2000/svg';
+  (function buildSauce() {
+    const W = Math.max(window.innerWidth, 1280) / (window.innerWidth < 960 ? 0.62 : 1);
+    const H = 560;
+    sauce.setAttribute('width', W);
+    sauce.setAttribute('height', H);
+    let seed = 11;
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const goo = document.createElementNS(SVG, 'g');
+    goo.setAttribute('filter', 'url(#goo)');
+    const his = document.createElementNS(SVG, 'g');
+    const rect = (cls, a) => { const r = document.createElementNS(SVG, 'rect'); r.setAttribute('class', cls); for (const k in a) r.setAttribute(k, a[k]); return r; };
+    goo.appendChild(rect('band', { x: -30, y: -60, width: W + 60, height: BAND + 60 }));
+    for (let x = -12; x < W; ) {
+      const dw = 26 + rnd() * 42;
+      // Soldaki metin alanının üstüne uzun damla gelmesin (yazı okunaklı kalsın)
+      const cap = x < W * 0.42 ? 120 : 360;
+      const max = Math.round((0.16 + Math.pow(rnd(), 1.7) * 0.84) * cap);
+      goo.appendChild(rect('drip', { x, y: BAND - dw, width: dw, height: dw, rx: dw / 2, 'data-dw': dw, 'data-max': max }));
+      his.appendChild(rect('hi', { x: x + dw * 0.2, y: BAND - 6, width: dw * 0.14, height: 0, rx: dw * 0.07, 'data-dw': 0, 'data-max': Math.round(max * 0.72) }));
+      x += dw + 10 + rnd() * 64;
+    }
+    sauce.append(goo, his);
+  })();
+  const sauceParts = [...sauce.querySelectorAll('.drip, .hi')];
+  // k: 0 (damla yok) … 1 (en uzun)
+  const dripH = (el, k) => Number(el.dataset.dw) + Number(el.dataset.max) * k;
+  const setSauce = (k) => sauceParts.forEach((el) => el.setAttribute('height', dripH(el, k)));
+  setSauce(0.55);
+
+  // ---------- Parlak sos katmanı (WebGL) ----------
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fxCanvas = xp.querySelector('[data-fx]');
+  const fx = createSauceFx(fxCanvas, { color: F[0].sos });
+  const fxCol = fx ? { r: fx.state.rgb[0], g: fx.state.rgb[1], b: fx.state.rgb[2] } : null;
+  if (fx) {
+    xp.classList.add('has-fx');
+    const layoutFx = () => {
+      fx.resize();
+      // Sabit sahnede (masaüstü) yalnızca dalgalar var, sol alttan sağ üste akar; damlalar sadece telefonda çizilir
+      // waveLine: [ekran ortasına göre enine kayma, açı]. Masaüstünde akış şişenin arkasından sağ üste yükselir.
+      fx.setLayout(xp.classList.contains('is-live') ? { drips: false, waveLine: [0.2, -0.62] } : { bandPx: 71, scale: 0.62, drips: true, waveLine: [0.17, -0.22] });
+      if (reduceMotion) fx.render(true);
+    };
+    layoutFx();
+    new ResizeObserver(layoutFx).observe(fxCanvas);
+    let fxVisible = true;
+    new IntersectionObserver(([e]) => (fxVisible = e.isIntersecting)).observe(xp);
+    if (!reduceMotion) gsap.ticker.add(() => { if (fxVisible && fx.state.show > 0.001) fx.render(); });
+  }
+
+  function paint() {
+    const f = F[cur];
+    slots.forEach((s) => {
+      const o = Number(s.dataset.slot);
+      const g = F[mod(cur + o)];
+      const im = s.querySelector('img');
+      im.src = g.sise;
+      im.alt = o === 0 ? `Ovaleks ${g.ad} waffle sos 1 kg şişe` : '';
+      s.title = g.ad;
+      s.setAttribute('aria-label', `${g.ad} aromasını seç`);
+    });
+    xp.style.setProperty('--sauce', f.sos);
+    if (fx) {
+      const [r, g, b] = fx.hexToRgb(f.sos);
+      gsap.to(fxCol, { r, g, b, duration: reduceMotion ? 0 : 0.4, onUpdate: () => { fx.state.rgb = [fxCol.r, fxCol.g, fxCol.b]; if (reduceMotion) fx.render(true); } });
+    }
+    kova.src = f.kova;
+    xp.querySelectorAll('[data-f]').forEach((el) => (el.textContent = f[el.dataset.f]));
+    xp.querySelectorAll('[data-f-href]').forEach((el) => (el.href = f[el.dataset.fHref]));
+  }
+  function go(dir, count = 1) {
+    if (locked || !count) return;
+    cur = mod(cur + dir * count);
+    paint();
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.fromTo(row, { x: dir * 70, opacity: 0.35 }, { x: 0, opacity: 1, duration: 0.45, ease: 'power3.out' });
+      gsap.fromTo(xp.querySelector('.picker .name'), { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35 });
+      // Sabitlenmeyen düzende (telefon) aroma değişince damlalar yeniden akar
+      if (!xp.classList.contains('is-live') && fx) gsap.fromTo(fx.state, { drip: 0.1 }, { drip: 0.55, duration: 0.9, ease: 'power2.out' });
+      else if (!xp.classList.contains('is-live')) {
+        sauceParts.forEach((el, i) => gsap.fromTo(el, { attr: { height: dripH(el, 0.1) } }, { attr: { height: dripH(el, 0.55) }, duration: 0.7, delay: (i % 9) * 0.02, ease: 'power2.out', overwrite: true }));
+      }
+    }
+  }
+  xp.querySelector('[data-prev]').addEventListener('click', () => go(-1));
+  xp.querySelector('[data-next]').addEventListener('click', () => go(1));
+  // Masaüstü: şişenin üzerine gelince o aroma seçilir. Kısa bekleme, fare sıranın üzerinden geçerken titremeyi önler.
+  let hoverAt = 0;
+  const pick = (s) => { const o = Number(s.dataset.slot); go(Math.sign(o), Math.abs(o)); };
+  slots.forEach((s) => {
+    s.addEventListener('mouseenter', () => {
+      if (performance.now() - hoverAt < 380) return;
+      hoverAt = performance.now();
+      pick(s);
+    });
+    s.addEventListener('click', () => pick(s));
+  });
+
+  // Dokunmatik: şişelerin üzerinde parmakla sağa sola kaydırınca aroma değişir (dikey kaydırma sayfaya kalır).
+  let touch = null;
+  row.addEventListener('touchstart', (e) => { const t = e.touches[0]; touch = { x: t.clientX, y: t.clientY, done: false }; }, { passive: true });
+  row.addEventListener('touchmove', (e) => {
+    if (!touch || touch.done) return;
+    const t = e.touches[0];
+    const dx = t.clientX - touch.x;
+    const dy = t.clientY - touch.y;
+    if (Math.abs(dx) > 36 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+      touch.done = true;
+      go(dx < 0 ? 1 : -1);
+      touch = { x: t.clientX, y: t.clientY, done: false }; // parmak kalkmadan devam eden kaydırma bir sonraki aromaya geçer
+    }
+  }, { passive: true });
+  row.addEventListener('touchend', () => { touch = null; });
+  window.addEventListener('keydown', (e) => {
+    if (window.scrollY > 40) return;
+    if (e.key === 'ArrowLeft') go(-1);
+    if (e.key === 'ArrowRight') go(1);
+  });
+
+  mm.add('(prefers-reduced-motion: no-preference)', () => {
+    lenis = new Lenis({ anchors: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    const tick = (t) => lenis.raf(t * 1000);
+    gsap.ticker.add(tick);
+    gsap.ticker.lagSmoothing(0);
+
+    gsap.utils.toArray('[data-reveal]').forEach((el) => {
+      gsap.from(el, { y: 36, autoAlpha: 0, duration: 0.7, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
+    });
+
+    return () => {
+      gsap.ticker.remove(tick);
+      lenis.destroy();
+      lenis = null;
+    };
+  });
+
+  // ---------- Sabitlenen sahne: yalnızca geniş ekranda ve hareket açıkken ----------
+  mm.add('(prefers-reduced-motion: no-preference) and (min-width: 960px)', () => {
+    xp.classList.add('is-live');
+    const q = (s) => xp.querySelector(s);
+    const hero = q('[data-slot="0"] img');
+    const sides = slots.filter((s) => s.dataset.slot !== '0').map((s) => s.querySelector('img'));
+    const panels = gsap.utils.toArray('[data-panel]', xp);
+    const lineup = q('[data-lineup]');
+    const cans = gsap.utils.toArray('.lineup .cans a', xp);
+    const dots = gsap.utils.toArray('[data-step]', xp);
+    const STEPS = 5;
+
+    // Giriş animasyonu sahne zaman çizelgesinin hedefi olmayan iç öğelere uygulanır (çakışmasın diye)
+    gsap.from('.xp .intro > *, .xp .picker > *', { autoAlpha: 0, y: 24, duration: 0.9, stagger: 0.08, ease: 'power3.out' });
+    gsap.from(row, { autoAlpha: 0, duration: 1.1, ease: 'power2.out' });
+
+    const setStep = (i) => {
+      locked = i > 0;
+      xp.classList.toggle('is-moving', i > 0);
+      dots.forEach((d, k) => d.classList.toggle('on', k === i));
+      panels.forEach((p, k) => p.classList.toggle('on', k === i - 1));
+      lineup.classList.toggle('on', i === STEPS);
+    };
+
+    let snapTimer;
+    const scrollToY = (top) => (lenis ? lenis.scrollTo(top, { duration: 0.8 }) : window.scrollTo({ top, behavior: 'smooth' }));
+    const queueSnap = () => {
+      clearTimeout(snapTimer);
+      snapTimer = setTimeout(() => {
+        const st = tl.scrollTrigger;
+        const y = window.scrollY;
+        if (!st || y <= st.start + 2 || y >= st.end - 2) return;
+        const step = (st.end - st.start) / STEPS;
+        const target = st.start + Math.round((y - st.start) / step) * step;
+        if (Math.abs(target - y) > 2) scrollToY(target);
+      }, 170);
+    };
+
+    const tl = gsap.timeline({
+      defaults: { ease: 'power2.inOut', duration: 1 },
+      scrollTrigger: {
+        trigger: xp,
+        start: 'top top',
+        end: () => '+=' + window.innerHeight * STEPS * 0.9,
+        pin: true,
+        scrub: 0.6,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => { setStep(Math.round(self.progress * STEPS)); queueSnap(); },
+      },
+    });
+    // Sos dalgaları: seçim ekranında hafif, aroma açılınca tam güçte; metin sahnelerinde soldaki yazı alanına girmez.
+    // Masaüstünde üstten damla yok (yalnızca telefonda).
+    if (fx) {
+      Object.assign(fx.state, { show: 1, drip: 0, wave: 0.5, mask: 0 });
+      tl.to(fx.state, { wave: 1, mask: 1, duration: 0.85, ease: 'power1.out' }, 0.1) // 0 → 1: aroma açılır
+        .to(fx.state, { wave: 0.6, duration: 0.8 }, 3.1) //                             3 → 4: üretici mesajı
+        .to(fx.state, { wave: 0.28, mask: 0, duration: 0.7 }, 4); //                    4 → 5: tüm aromalar
+    }
+
+    const show = (el, t, from = { y: 40 }) => tl.fromTo(el, { autoAlpha: 0, ...from }, { autoAlpha: 1, y: 0, x: 0, duration: 0.45 }, t + 0.55);
+    const hide = (el, t) => tl.to(el, { autoAlpha: 0, y: -40, duration: 0.4 }, t);
+
+    // 0 → 1: aroma seçildi; zemin aromanın rengine döner, şişe öne gelir
+    tl.to('.xp .intro', { autoAlpha: 0, y: -40, duration: 0.4 }, 0)
+      .to('.xp .picker', { autoAlpha: 0, y: 30, duration: 0.4 }, 0)
+      .to('.xp .pedestal', { autoAlpha: 0, duration: 0.4 }, 0)
+      .to(sides, { y: (i) => (i % 2 ? '-70vh' : '70vh'), rotation: (i) => (i % 2 ? -40 : 40), autoAlpha: 0, stagger: 0.04 }, 0)
+      .to('.xp .flood', { opacity: 1 }, 0)
+      .to(hero, { x: '19vw', y: '-9vh', scale: 1.7, rotation: 10 }, 0);
+    show(panels[0], 0);
+    // 1 → 2: kullanım
+    hide(panels[0], 1);
+    tl.to(hero, { x: '21vw', y: '-9vh', scale: 1.85, rotation: -9 }, 1);
+    show(panels[1], 1);
+    // 2 → 3: ambalaj; kova şişenin yanına gelir
+    hide(panels[1], 2);
+    tl.to(hero, { x: '31vw', y: '-6vh', scale: 1.3, rotation: 7 }, 2)
+      .fromTo(kova, { autoAlpha: 0, y: '50vh', rotation: -12 }, { autoAlpha: 1, y: 0, rotation: -3 }, 2);
+    show(panels[2], 2);
+    // 3 → 4: üretici mesajı; arkada dev yazı
+    hide(panels[2], 3);
+    tl.to(kova, { autoAlpha: 0, x: '-40vw', rotation: -20 }, 3)
+      .to(hero, { x: 0, y: '-16vh', scale: 1.1, rotation: 0 }, 3)
+      .fromTo('.xp .ghost', { opacity: 0, scale: 1.25 }, { opacity: 0.16, scale: 1 }, 3);
+    show(panels[3], 3);
+    // 4 → 5: tüm aromalar dizilir
+    hide(panels[3], 4);
+    tl.to(hero, { y: '-90vh', autoAlpha: 0, scale: 0.9 }, 4)
+      .to('.xp .ghost', { opacity: 0 }, 4)
+      .to('.xp .flood', { opacity: 0 }, 4)
+      .fromTo(lineup, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 4.2)
+      .fromTo(cans, { y: '60vh', rotation: (i) => (i - 3) * 9, autoAlpha: 0 }, { y: 0, rotation: (i) => (i - 3) * 3, autoAlpha: 1, stagger: 0.06, duration: 0.7 }, 4.15)
+      .fromTo('.xp .lineup h2, .xp .lineup .actions', { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.4, stagger: 0.08 }, 4.6);
+
+    setStep(0);
+
+    return () => {
+      clearTimeout(snapTimer);
+      xp.classList.remove('is-live', 'is-moving');
+      locked = false;
+      gsap.set(sauce, { clearProps: 'all' });
+      setSauce(0.55);
+      if (fx) Object.assign(fx.state, { show: 1, drip: 0.55, wave: 0.7, mask: 0 });
+      gsap.set([hero, kova, lineup, row, ...sides, ...panels, ...cans, '.xp .intro', '.xp .picker', '.xp .pedestal', '.xp .flood', '.xp .ghost', '.xp .lineup h2', '.xp .lineup .actions', '[data-slot="0"]'], { clearProps: 'all' });
+    };
+  });
+</script>

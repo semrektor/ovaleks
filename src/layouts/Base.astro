@@ -1,0 +1,155 @@
+---
+import '../styles/global.css';
+import SocialLinks from '../components/SocialLinks.astro';
+import { site, topCategories, categoryUrl, corporateNav } from '../lib/catalog.js';
+import { sosyal } from '../lib/social.js';
+
+const { title, description, jsonLd, theme } = Astro.props;
+const dark = theme === 'dark';
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Ovaleks',
+  legalName: site.firma,
+  url: Astro.site.href,
+  logo: new URL('/gorseller/2020/08/ovaleks-logo.svg', Astro.site).href,
+  foundingDate: '1986',
+  address: { '@type': 'PostalAddress', streetAddress: 'Firuzköy Mah. Bağlariçi Cad. No:81', postalCode: '34325', addressLocality: 'Avcılar', addressRegion: 'İstanbul', addressCountry: 'TR' },
+  telephone: '+902124239595',
+};
+const hesaplar = ['instagram', 'youtube', 'linkedin', 'facebook'].map((k) => sosyal[k]).filter(Boolean);
+if (hesaplar.length) org.sameAs = hesaplar;
+---
+
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/gorseller/2020/08/ovaleks-logo.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script type="application/ld+json" set:html={JSON.stringify(org)} />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body class={dark ? 'theme-dark' : ''}>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="logo" href="/" aria-label="Ovaleks ana sayfa"><img src={dark ? '/gorseller/2020/08/ovaleks-logo-arkasi-beyaz.svg' : '/gorseller/2020/08/ovaleks-logo.svg'} alt="Ovaleks" width="150" height="34" /></a>
+        <!-- Sekmeler eski sitedeki üst menüye göre; Waffle Sosları ve 40. Yıl eklendi -->
+        <nav aria-label="Ana menü" class="main-nav">
+          <a href="/">Ana Sayfa</a>
+          <div class="drop">
+            <a href="/hakkimizda/" aria-haspopup="true">Kurumsal</a>
+            <div class="menu">{corporateNav.map(([ad, href]) => <a href={href}>{ad}</a>)}</div>
+          </div>
+          <div class="drop">
+            <a href="/urunler/" aria-haspopup="true">Ürünler</a>
+            <div class="menu">
+              {topCategories.map((c) => <a href={categoryUrl(c)}>{c.ad}</a>)}
+              <a href="/urunler/"><b>Tüm ürünler</b></a>
+            </div>
+          </div>
+          <a href="/urun-kategori/cikolata-urunleri/waffle-sos-cesitleri/">Waffle Sosları</a>
+          <a href="/tarifler/">Tarifler</a>
+          <a class="yil" href="/40-yil/">40. Yıl</a>
+          <a href="/iletisim/">İletişim</a>
+        </nav>
+        <button class="search-btn" type="button" data-search-open aria-label="Ürün ara" title="Ürün ara">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+        </button>
+        <a class="btn small" href="/#teklif">Toptan teklif al</a>
+        <details class="mobile-nav">
+          <summary aria-label="Menü"><span></span><span></span><span></span></summary>
+          <div class="panel">
+            <button class="ara" type="button" data-search-open>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+              Ürün ara
+            </button>
+            <a href="/">Ana Sayfa</a>
+            <a href="/urun-kategori/cikolata-urunleri/waffle-sos-cesitleri/">Waffle Sosları</a>
+            <a href="/urunler/">Ürünler</a>
+            <a href="/tarifler/">Tarifler</a>
+            <a class="yil" href="/40-yil/">40. Yıl</a>
+            {corporateNav.map(([ad, href]) => <a class="sub" href={href}>{ad}</a>)}
+            <a href="/iletisim/">İletişim</a>
+          </div>
+        </details>
+      </div>
+    </header>
+
+    <main><slot /></main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="cols">
+          <div>
+            <a class="logo" href="/"><img src="/gorseller/2020/08/ovaleks-logo-arkasi-beyaz.svg" alt="Ovaleks" width="176" height="40" /></a>
+            <p>{site.firma}<br />1986’dan beri pastacılık profesyonelleri için üretim.</p>
+            <p>{site.adres}<br /><a href={site.telefonHref}>{site.telefon}</a> · <a href={`mailto:${site.eposta}`}>{site.eposta}</a></p>
+          </div>
+          <div>
+            <h3>Ürün grupları</h3>
+            <ul>
+              {topCategories.map((c) => <li><a href={categoryUrl(c)}>{c.ad}</a></li>)}
+            </ul>
+          </div>
+          <div>
+            <h3>Hızlı erişim</h3>
+            <ul>
+              <li><a href="/urun-kategori/cikolata-urunleri/waffle-sos-cesitleri/">Waffle sos çeşitleri</a></li>
+              <li><a href="/urunler/">Tüm ürünler</a></li>
+              <li><a href="/#teklif">Numune ve toptan teklif</a></li>
+              <li><a href="/tarifler/">Tarifler</a></li>
+              <li><a href="/40-yil/">40. yıl</a></li>
+              <li><a href="/hakkimizda/">Hakkımızda</a></li>
+              <li><a href="/iletisim/">İletişim</a></li>
+              <li><a href="/gizlilik-sozlesmesi/">Gizlilik sözleşmesi</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="follow">
+          <SocialLinks links={sosyal} aglar={['instagram', 'youtube', 'linkedin', 'facebook', 'whatsapp']} label="Bizi takip edin" koyu />
+        </div>
+        <div class="legal">
+          <span>© {new Date().getFullYear()} {site.firma}</span>
+          <span>İşletme Kayıt No: {site.kayitNo} · Taslak sürüm</span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Ürün arama penceresi (src/scripts/arama.js). Enter: seçili ürün yoksa Tüm Ürünler sayfasında süzülmüş liste açılır -->
+    <dialog class="search-dialog" data-search aria-label="Ürün arama">
+      <div class="inner">
+        <form action="/urunler/" method="get" role="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+          <input type="search" name="q" placeholder="Ürün ara: krem şanti, waffle sosu, pasta jeli…" aria-label="Ürün ara" autocomplete="off" enterkeyhint="search" />
+          <button type="button" data-search-close aria-label="Aramayı kapat">Kapat</button>
+        </form>
+        <p class="status" data-search-status aria-live="polite"></p>
+        <div class="results" data-search-results data-lenis-prevent></div>
+        <a class="all" data-search-all href="/urunler/" hidden></a>
+      </div>
+    </dialog>
+
+    <!-- WhatsApp numarası girilene kadar düğme iletişim sayfasına gider (src/data/sosyal-baglantilar.json) -->
+    <a class="wa-float" href={sosyal.whatsapp || '/iletisim/'} target={sosyal.whatsapp ? '_blank' : null} rel={sosyal.whatsapp ? 'noopener' : null} aria-label="WhatsApp üzerinden bilgi al">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg>
+      <span>Bilgi al</span>
+    </a>
+
+    <script>
+      import { kur } from '../scripts/arama.js';
+      kur();
+    </script>
+  </body>
+</html>

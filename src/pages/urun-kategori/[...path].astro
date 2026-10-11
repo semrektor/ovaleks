@@ -1,0 +1,38 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { categories, inCategory, categoryUrl } from '../../lib/catalog.js';
+
+export function getStaticPaths() {
+  // Waffle sos kategorisinin kendi özel sayfası var (animasyonlu vitrin): cikolata-urunleri/waffle-sos-cesitleri/index.astro
+  return categories.filter((c) => c.slug !== 'waffle-sos-cesitleri').map((c) => ({
+    params: { path: new URL(c.url).pathname.replace(/^\/urun-kategori\//, '').replace(/\/$/, '') },
+    props: { c },
+  }));
+}
+
+const { c } = Astro.props;
+const list = inCategory(c);
+const children = categories.filter((x) => x.yol.startsWith(c.yol + ' > ') && x.yol.split(' > ').length === c.yol.split(' > ').length + 1 && inCategory(x).length > 0);
+const trail = c.yol.split(' > ').slice(0, -1).map((ad, i, all) => categories.find((x) => x.yol === all.slice(0, i + 1).join(' > '))).filter(Boolean);
+const description = `Ovaleks ${c.ad.toLocaleLowerCase('tr')}: ${list.length} ürün. Toptan fiyat ve numune için üretici firmadan teklif alın.`;
+---
+
+<Base title={`${c.ad} | Ovaleks`} description={description}>
+  <div class="wrap">
+    <div class="page-head">
+      <nav class="crumbs" aria-label="Sayfa yolu">
+        <a href="/">Ana sayfa</a> / <a href="/urunler/">Ürünler</a>
+        {trail.map((x) => <> / <a href={categoryUrl(x)}>{x.ad}</a></>)}
+      </nav>
+      <h1 class="display">{c.ad}</h1>
+      {children.length > 0 && <div class="chips">{children.map((x) => <a class="chip" href={categoryUrl(x)}>{x.ad} ({inCategory(x).length})</a>)}</div>}
+    </div>
+    {list.length > 0 ? <div class="grid">{list.map((p) => <ProductCard product={p} />)}</div> : <p>Bu kategoride henüz ürün yok.</p>}
+    <p class="cta"><a class="btn" href="/#teklif">Bu ürünler için toptan teklif al</a></p>
+  </div>
+</Base>
+
+<style>
+  .cta { padding: 44px 0 80px; }
+</style>

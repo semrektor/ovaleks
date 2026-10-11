@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.astro/
+
+# Depoda yalnızca sitenin kendisi durur. Aşağıdakiler bilgisayarda kalır, depoya gönderilmez:
+# eski sitenin arşivi, görsel ve video kaynakları, hazırlık betikleri, iç çalışma belgeleri
+eski-site-icerik/
+yeni-gorseller/
+scripts/
+.claude/
+formlar/
+firmadan-beklenenler/
+Ovaleks-Anahtar-Kelime-Bilgi-Formu.pdf

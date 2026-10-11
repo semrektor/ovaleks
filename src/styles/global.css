@@ -1,0 +1,223 @@
+:root {
+  --red: #e20613;
+  --red-dark: #b8040f;
+  --choco: #2a1810;
+  --cream: #fbf6ec;
+  --paper: #ffffff;
+  --ink: #1e1611;
+  --muted: #6b5e55;
+  --line: #e7dccb;
+  --display: 'Archivo', 'Arial Narrow', sans-serif;
+  --text: 'Inter', system-ui, sans-serif;
+  --wrap: 1240px;
+  --gutter: clamp(16px, 4vw, 40px);
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--text);
+  font-size: 16px;
+  line-height: 1.55;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; }
+h1, h2, h3 { margin: 0; }
+p { margin: 0 0 1em; }
+
+.wrap { max-width: var(--wrap); margin-inline: auto; padding-inline: var(--gutter); }
+
+.display {
+  font-family: var(--display);
+  font-stretch: 68%;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+}
+.eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-radius: 999px;
+  border: 2px solid var(--red);
+  background: var(--red);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+.btn:hover { background: var(--red-dark); border-color: var(--red-dark); transform: translateY(-1px); }
+.btn.ghost { background: transparent; color: var(--ink); border-color: currentColor; }
+.btn.ghost:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+.btn.small { padding: 10px 18px; font-size: 14px; }
+
+/* Müşteriden teyit bekleyen taslak bilgi */
+.taslak {
+  display: inline-block;
+  padding: 1px 8px;
+  border: 1px dashed currentColor;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  vertical-align: middle;
+}
+
+/* Beyaz zeminli ürün görsellerini renkli zemine oturtur (şeffaf PNG gelene kadar). */
+.blend {
+  mix-blend-mode: multiply;
+  /* Görselin kare kenarındaki gölge kesiğini yumuşatır */
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 84%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 84%, transparent 100%);
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--cream) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.site-header .wrap { display: flex; align-items: center; gap: 28px; height: 68px; }
+.site-header .logo img { height: 34px; width: auto; }
+.site-header nav { display: flex; align-items: center; gap: 22px; margin-left: auto; font-weight: 600; font-size: 15px; }
+.site-header nav a { text-decoration: none; white-space: nowrap; }
+.site-header nav a:hover { color: var(--red); }
+/* Açılır menüler (Kurumsal, Ürünler) */
+.drop { position: relative; }
+.drop > a::after { content: ''; display: inline-block; margin-left: 6px; border: 4px solid transparent; border-top-color: currentColor; translate: 0 2px; }
+.drop .menu { display: none; position: absolute; top: 100%; left: -18px; min-width: 250px; padding: 10px; background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.45); }
+.drop:hover .menu, .drop:focus-within .menu { display: grid; }
+.drop .menu a { padding: 9px 12px; border-radius: 8px; font-weight: 500; }
+.drop .menu a:hover { background: #f4ece0; color: var(--red-dark); }
+/* 40. yıl sekmesi öne çıkar */
+.site-header .yil { padding: 6px 12px; border-radius: 999px; border: 1.5px solid #c9a24b; color: #a37a1c; }
+.site-header .yil:hover { background: #c9a24b; color: #fff !important; }
+.theme-dark .site-header .yil { color: #e8c87a; }
+/* Telefon menüsü */
+.mobile-nav { display: none; }
+.mobile-nav summary { list-style: none; width: 42px; height: 42px; display: grid; align-content: center; gap: 5px; padding: 0 9px; cursor: pointer; border: 1px solid currentColor; border-radius: 10px; }
+.mobile-nav summary::-webkit-details-marker { display: none; }
+.mobile-nav summary span { height: 2px; background: currentColor; border-radius: 2px; }
+.mobile-nav .panel { position: absolute; left: 0; right: 0; top: 100%; display: grid; padding: 10px var(--gutter) 18px; background: var(--paper); color: var(--ink); border-bottom: 1px solid var(--line); max-height: calc(100vh - 68px); overflow: auto; }
+.mobile-nav .panel a { padding: 12px 4px; text-decoration: none; font-weight: 600; border-bottom: 1px solid var(--line); }
+.mobile-nav .panel a.sub { font-weight: 500; padding-left: 18px; color: var(--muted); }
+.mobile-nav .panel a.yil { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; color: #a37a1c; }
+.mobile-nav .panel .ara { display: flex; align-items: center; gap: 10px; padding: 12px 14px; margin: 4px 0 6px; border: 1px solid var(--line); border-radius: 12px; background: #f4ece0; color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; }
+.mobile-nav .panel .ara svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+@media (max-width: 1100px) {
+  .site-header .main-nav { display: none; }
+  .site-header .search-btn { margin-left: auto; }
+  .site-header .wrap { gap: 14px; }
+  .mobile-nav { display: block; }
+}
+/* Dar telefonda üst çubuktaki büyüteç gizlenir; arama menünün içindedir */
+@media (max-width: 520px) {
+  .site-header .search-btn { display: none; }
+  .site-header .btn { margin-left: auto; }
+}
+
+/* Ürün arama: üst çubuktaki büyüteç ve arama penceresi */
+[hidden] { display: none !important; }
+.search-btn { display: grid; place-items: center; width: 42px; height: 42px; flex: none; padding: 0; border: 1px solid transparent; border-radius: 50%; background: none; color: inherit; cursor: pointer; transition: background 0.2s, border-color 0.2s; }
+.search-btn:hover, .search-btn:focus-visible { border-color: currentColor; }
+.search-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.search-dialog { width: min(680px, calc(100vw - 24px)); max-height: min(78vh, 720px); margin: 9vh auto auto; padding: 0; border: 0; border-radius: 22px; background: var(--paper); color: var(--ink); box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.6); overflow: hidden; }
+.search-dialog::backdrop { background: rgba(18, 9, 7, 0.62); backdrop-filter: blur(4px); }
+.search-dialog .inner { display: flex; flex-direction: column; max-height: min(78vh, 720px); }
+.search-dialog form { display: flex; align-items: center; gap: 12px; padding: 14px 16px 14px 20px; border-bottom: 1px solid var(--line); }
+.search-dialog form svg { width: 22px; height: 22px; flex: none; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; }
+.search-dialog input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 18px; color: inherit; padding: 8px 0; }
+.search-dialog input::-webkit-search-cancel-button { display: none; }
+.search-dialog form button { flex: none; padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; background: none; font: inherit; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; }
+.search-dialog form button:hover { color: var(--ink); border-color: var(--ink); }
+.search-dialog .status { margin: 0; padding: 12px 20px; font-size: 13px; color: var(--muted); }
+.search-dialog .results { overflow-y: auto; overscroll-behavior: contain; padding: 0 8px 8px; }
+.search-dialog .sonuc { display: flex; align-items: center; gap: 14px; padding: 8px 12px; border-radius: 14px; text-decoration: none; color: inherit; }
+.search-dialog .sonuc:hover, .search-dialog .sonuc.aktif { background: #f4ece0; }
+.search-dialog .sonuc img { width: 56px; height: 56px; flex: none; object-fit: contain; border-radius: 10px; background: #fff; border: 1px solid var(--line); }
+.search-dialog .sonuc span { display: grid; gap: 2px; min-width: 0; }
+.search-dialog .sonuc b { font-size: 15px; line-height: 1.3; }
+.search-dialog .sonuc small { font-size: 12.5px; color: var(--muted); }
+.search-dialog .all { display: block; padding: 14px 20px; border-top: 1px solid var(--line); font-weight: 700; font-size: 14px; color: var(--red); text-decoration: none; text-align: center; }
+.search-dialog .all:hover { background: #f4ece0; }
+
+/* Koyu tema: animasyonlu vitrin sayfaları */
+.theme-dark { background: #120907; color: #f3e7d6; }
+.theme-dark .site-header { position: fixed; left: 0; right: 0; background: rgba(18, 9, 7, 0.55); border-bottom-color: rgba(255, 255, 255, 0.08); color: #fff; }
+.theme-dark .site-header nav a:hover { color: #ff8a8f; }
+.theme-dark .eyebrow { color: #ff8a8f; }
+.theme-dark .btn.ghost { color: #fff; }
+.theme-dark .btn.ghost:hover { background: #fff; color: #120907; border-color: #fff; }
+
+.site-footer { background: var(--choco); color: #e9dccb; padding: 56px 0 88px; margin-top: 0; } /* alt boşluk: sabit WhatsApp düğmesi son satırı örtmesin */
+.site-footer .cols { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px; }
+.site-footer h3 { font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #fff; margin-bottom: 14px; }
+.site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.site-footer a { text-decoration: none; }
+.site-footer a:hover { color: #fff; text-decoration: underline; }
+.site-footer .logo img { height: 40px; margin-bottom: 16px; }
+.site-footer .follow { margin-top: 40px; padding-top: 24px; border-top: 1px solid #4a342a; }
+.site-footer .follow a:hover { text-decoration: none; }
+.site-footer .legal { margin-top: 24px; padding-top: 20px; border-top: 1px solid #4a342a; font-size: 13px; color: #b9a797; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; }
+@media (max-width: 760px) { .site-footer .cols { grid-template-columns: 1fr; } }
+
+/* Sağ altta sabit duran WhatsApp "Bilgi al" düğmesi */
+.wa-float { position: fixed; right: 18px; bottom: 18px; z-index: 60; display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px 12px 14px; border-radius: 999px; background: #128c4a; color: #fff; font-weight: 700; font-size: 15px; text-decoration: none; box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.55); transition: transform 0.2s, background 0.2s; }
+.wa-float:hover, .wa-float:focus-visible { background: #0f7a40; transform: translateY(-2px); }
+.wa-float svg { width: 26px; height: 26px; fill: currentColor; flex: none; }
+@media print { .wa-float { display: none; } }
+
+/* Ürün kartı */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 18px; }
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -18px rgba(42, 24, 16, 0.45); }
+.card img { aspect-ratio: 1; object-fit: contain; width: 100%; background: #fff; }
+.card .body { padding: 14px 16px 18px; border-top: 1px solid var(--line); }
+.card .name { font-weight: 700; line-height: 1.25; }
+.card .meta { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+.page-head { padding: 44px 0 28px; }
+.page-head h1 { font-size: clamp(34px, 5vw, 60px); }
+.crumbs { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.crumbs a { text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; }
+.chip { padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); font-size: 14px; font-weight: 600; text-decoration: none; }
+.chip:hover { border-color: var(--red); color: var(--red); }
+
+.prose h2, .prose h3, .prose h4 { font-size: 20px; margin: 1.6em 0 0.5em; }
+.prose table { border-collapse: collapse; width: 100%; max-width: 520px; margin: 1em 0; font-size: 15px; }
+.prose th, .prose td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; }
+.prose th { background: #f4ece0; }
+.prose a { color: var(--red-dark); }
+.prose ul { padding-left: 20px; }

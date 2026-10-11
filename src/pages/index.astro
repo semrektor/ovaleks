@@ -1,0 +1,336 @@
+---
+// Ana sayfa. Giriş bölümü bir "film": pasta kutusu açılır, içinden Ovaleks pastası çıkar, kamera kuş bakışından karşıya iner,
+// sonunda pastada kullanılan Ovaleks ürünleri belirir. Film, kaydırmaya bağlı oynayan bir kare dizisidir:
+//   public/gorseller/ana-sayfa-video/kareler/kare-001.webp, kare-002.webp, …   (scripts/video-kareleri.mjs üretir)
+// Kareler yoksa sade bir giriş gösterilir. Waffle sos vitrini Waffle Sosları sayfasındadır.
+import fs from 'node:fs';
+import Base from '../layouts/Base.astro';
+import LeadSection from '../components/LeadSection.astro';
+import { products, topCategories, inCategory, categoryUrl, bySlug, productUrl, img, site, stageFlavors } from '../lib/catalog.js';
+
+const WAFFLE = '/urun-kategori/cikolata-urunleri/waffle-sos-cesitleri/';
+const kareDir = 'public/gorseller/ana-sayfa-video/kareler';
+const kareler = fs.existsSync(kareDir) ? fs.readdirSync(kareDir).filter((f) => /^kare-\d+\.webp$/.test(f)).sort() : [];
+const filmVar = kareler.length >= 2;
+// Pastada kullanılan Ovaleks ürünleri: filmin sonunda pastanın iki yanında belirir
+const malzemeler = [
+  ['Pandispanyası', 'ovaleks-pasta-katki-maddesi'],
+  ['Ara kreması', 'krema-tozu-1-kg'],
+  ['Şantisi', 'toz-krem-santi-1-kg'],
+  ['Parlak çilek jeli', 'cilek-aromali-soguk-pasta-jeli'],
+  ['Çikolata süslemesi', 'cikolata-aromali-dekor-sos'],
+].map(([rol, slug]) => ({ rol, p: bySlug.get(slug) })).filter((m) => m.p);
+const trio = ['/gorseller/2024/02/ovaleks-pasta-katki-maddesi-slider.png', '/gorseller/2024/02/ovaleks-toz-krem-santi-slider.png', '/gorseller/2024/02/ovaleks-krema-tozu-slider.png'];
+const sauce = stageFlavors[0];
+---
+
+<Base
+  theme="dark"
+  title="Ovaleks | Profesyonel Pastacılık Malzemeleri Üreticisi"
+  description={`Ovaleks, 1986’dan beri pastaneler, kafeler, oteller ve toptancılar için pastacılık malzemeleri üretiyor: pasta katkı maddesi, toz krem şanti, krema tozu, waffle sosları ve daha fazlası. ${products.length} ürün.`}
+>
+  {
+    filmVar ? (
+      <section class="film" data-film data-count={kareler.length}>
+        <canvas data-canvas aria-hidden="true" />
+        <div class="shade" aria-hidden="true" />
+        <div class="edge" data-edge aria-hidden="true" />
+        <div class="cap c1" data-cap1>
+          <p class="eyebrow">1986’dan beri · İstanbul</p>
+          <h1 class="display">Her pastanın içinde <em>Ovaleks</em> var.</h1>
+          <p class="hint">Kutuyu açmak için kaydırın ↓</p>
+        </div>
+        <div class="cap c2" data-cap2>
+          <h2 class="display">Bu pastada neler var?</h2>
+        </div>
+        <ul class="malzeme" data-malzeme>
+          {malzemeler.map((m, i) => (
+            <li class={i % 2 ? 'sag' : 'sol'} data-m>
+              <a href={productUrl(m.p)}>
+                <img src={img(m.p)} alt={m.p.gorsel_alt || m.p.ad} width="200" height="200" loading="lazy" />
+                <span><small>{m.rol}</small><b>{m.p.ad}</b></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div class="bar" aria-hidden="true"><i data-bar /></div>
+      </section>
+    ) : (
+      <section class="hero">
+        <div class="wrap">
+          <p class="eyebrow">1986’dan beri · İstanbul</p>
+          <h1 class="display">Her pastanın içinde <em>Ovaleks</em> var.</h1>
+          <p class="lead">Pasta katkı maddesinden krem şantiye, krema tozundan waffle sosuna {products.length} ürün.</p>
+          <div class="actions">
+            <a class="btn" href="/urunler/">Ürünleri incele</a>
+            <a class="btn ghost" href="#teklif">Toptan teklif al</a>
+          </div>
+          <div class="trio" aria-hidden="true">{trio.map((t) => <img src={t} alt="" width="1044" height="731" />)}</div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- ÖNE ÇIKANLAR -->
+  <section class="features">
+    <div class="wrap feature-grid">
+      <a class="feature waffle" href={WAFFLE} style={`--sauce:${sauce.sos}`} data-reveal>
+        <div>
+          <p class="eyebrow">Öne çıkan ürün grubu</p>
+          <h2 class="display">Waffle sosları</h2>
+          <p>7 aroma, 10 kg kova ve 1 kg şişe. Waffle, krep ve pankek için.</p>
+          <span class="btn small">Waffle soslarını keşfet</span>
+        </div>
+        <img src={sauce.kova} alt="Ovaleks waffle sos 10 kg kova" width="700" height="700" loading="lazy" />
+      </a>
+      <a class="feature yil" href="/40-yil/" data-reveal>
+        <div>
+          <p class="eyebrow">1986 – 2026</p>
+          <h2 class="display"><span>40</span>. yıl</h2>
+          <p>Bir pasta ustasının atölyesinden bugünkü üretim tesisine: dede, oğul ve torunun hikâyesi.</p>
+          <span class="btn small ghost">Hikâyeyi gör</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- NEDEN OVALEKS -->
+  <section class="why" id="neden">
+    <div class="wrap">
+      <p class="eyebrow">Neden Ovaleks</p>
+      <h2 class="display">Aracıdan değil, üreticiden.</h2>
+      <div class="why-grid">
+        <div data-reveal>
+          <span class="big display">1986</span>
+          <h3>Pasta ustasının kurduğu firma</h3>
+          <p>Ustalar Gıda, 1986’da pasta ustası Burhanettin Dar tarafından kuruldu. Ovaleks markasıyla o günden beri profesyonel mutfaklar için üretiyor.</p>
+        </div>
+        <div data-reveal>
+          <span class="big display">Üretici</span>
+          <h3>Üretim kendi tesisimizde</h3>
+          <p>Ürünler İstanbul Avcılar’daki tesiste, Türk Gıda Kodeksi’ne uygun olarak üretilir. İşletme kayıt numarası: {site.kayitNo}.</p>
+        </div>
+        <div data-reveal>
+          <span class="big display">{products.length}</span>
+          <h3>Tek tedarikçiden tüm tatlı menüsü</h3>
+          <p>Pasta jeli, kek karışımı, krem şanti, dolgu, çikolata ürünleri ve waffle sosları: {topCategories.length} ürün grubunda {products.length} ürün.</p>
+        </div>
+        <div data-reveal>
+          <span class="big display">Destek</span>
+          <h3>Satış öncesi ve sonrası hizmet</h3>
+          <p>Pastacılık, catering ve HoReCa işletmelerine satış öncesinde ve sonrasında hizmet veriyoruz.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÜRÜN GRUPLARI -->
+  <section class="cats">
+    <div class="wrap">
+      <p class="eyebrow">Ürün yelpazesi</p>
+      <h2 class="display">{topCategories.length} ürün grubu, {products.length} ürün.</h2>
+      <div class="cat-grid">
+        {topCategories.map((c) => <a href={categoryUrl(c)} data-reveal><b>{c.ad}</b><span>{inCategory(c).length} ürün</span></a>)}
+      </div>
+    </div>
+  </section>
+
+  <LeadSection />
+</Base>
+
+<style>
+  section { position: relative; }
+  h2.display { font-size: clamp(34px, 5vw, 72px); margin: 10px 0 0; color: #fff; }
+  .lead { font-size: clamp(17px, 1.6vw, 20px); max-width: 54ch; color: #e6d8c6; }
+
+  /* ---------- FİLM: kaydırmaya bağlı kare dizisi ---------- */
+  .film { height: 100vh; overflow: hidden; background: #120907; }
+  .film canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .film .shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(rgba(18, 9, 7, 0.55) 0%, rgba(18, 9, 7, 0) 26%, rgba(18, 9, 7, 0) 74%, rgba(18, 9, 7, 0.6) 100%); }
+  /* Filmin sonunda kenarlar site zeminine karışır; ürün kartları bu koyu alanda durur */
+  .film .edge { position: absolute; inset: 0; pointer-events: none; opacity: 0; background: linear-gradient(90deg, #120907 0%, rgba(18, 9, 7, 0.75) 12%, rgba(18, 9, 7, 0) 30%, rgba(18, 9, 7, 0) 70%, rgba(18, 9, 7, 0.75) 88%, #120907 100%); }
+  .cap { position: absolute; left: 0; right: 0; padding-inline: var(--gutter); text-align: center; text-shadow: 0 2px 18px rgba(0, 0, 0, 0.7); }
+  .cap.c1 { top: 100px; }
+  .cap.c1 h1 { font-size: clamp(36px, 5vw, 80px); color: #fff; margin: 10px 0 0; }
+  .cap.c1 h1 em { font-style: normal; color: var(--red); }
+  .cap .hint { margin: 14px 0 0; font-size: 13px; opacity: 0.75; }
+  .cap.c2 { top: 96px; opacity: 0; }
+  .cap.c2 h2 { font-size: clamp(30px, 4vw, 60px); }
+  .malzeme { list-style: none; margin: 0; padding: 0; position: absolute; inset: 0; pointer-events: none; }
+  .malzeme li { position: absolute; width: min(26vw, 300px); opacity: 0; pointer-events: auto; }
+  .malzeme li.sol { left: clamp(16px, 4vw, 64px); }
+  .malzeme li.sag { right: clamp(16px, 4vw, 64px); }
+  .malzeme li:nth-child(1) { top: 26%; }
+  .malzeme li:nth-child(2) { top: 32%; }
+  .malzeme li:nth-child(3) { top: 49%; }
+  .malzeme li:nth-child(4) { top: 55%; }
+  .malzeme li:nth-child(5) { top: 72%; }
+  .malzeme a { display: flex; align-items: center; gap: 12px; padding: 10px 16px 10px 10px; border-radius: 18px; background: rgba(18, 9, 7, 0.78); border: 1px solid rgba(255, 243, 220, 0.22); backdrop-filter: blur(8px); text-decoration: none; color: #fff; transition: border-color 0.2s, background 0.2s; }
+  .malzeme a:hover { border-color: var(--red); background: rgba(18, 9, 7, 0.92); }
+  .malzeme img { width: 64px; height: 64px; object-fit: contain; border-radius: 12px; background: #fff; flex: none; }
+  .malzeme span { display: grid; gap: 2px; }
+  .malzeme small { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #ff8a8f; }
+  .malzeme b { font-size: 15px; line-height: 1.25; }
+  .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255, 255, 255, 0.12); }
+  .bar i { display: block; height: 100%; background: var(--red); transform-origin: left; transform: scaleX(0); }
+  @media (max-width: 900px), (max-aspect-ratio: 5/4) {
+    /* Telefonda ve dik/kareye yakın ekranlarda ürünler pastanın üstüne değil, altta yatay kaydırılan bir şeritte durur */
+    .malzeme { inset: auto 0 86px 0; /* sağ alttaki WhatsApp düğmesinin üstünde kalır */ display: flex; gap: 10px; overflow-x: auto; padding: 0 var(--gutter); pointer-events: auto; scrollbar-width: none; }
+    .malzeme li, .malzeme li.sol, .malzeme li.sag { position: static; flex: 0 0 min(72vw, 280px); }
+    .film .edge { display: none; }
+  }
+
+  /* ---------- Film yokken sade giriş ---------- */
+  .hero { padding: 120px 0 30px; text-align: center; background: radial-gradient(90% 60% at 50% 30%, #3a2018 0%, #1a0d0a 55%, #120907 100%); overflow: hidden; }
+  .hero h1 { font-size: clamp(38px, 5.4vw, 84px); color: #fff; margin: 10px auto 16px; max-width: 18ch; }
+  .hero h1 em { font-style: normal; color: var(--red); }
+  .hero .lead { margin-inline: auto; }
+  .hero .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 26px 0 8px; }
+  .hero .trio { display: flex; justify-content: center; align-items: flex-end; max-width: 980px; margin: 0 auto; }
+  .hero .trio img { width: 40%; margin-inline: -4%; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.5)); }
+  .hero .trio img:nth-child(2) { width: 46%; z-index: 1; }
+
+  /* ---------- ÖNE ÇIKANLAR ---------- */
+  .features { padding: clamp(40px, 6vw, 80px) 0 clamp(48px, 7vw, 90px); }
+  .feature-grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 16px; }
+  .feature { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: clamp(24px, 3vw, 44px); border-radius: 28px; text-decoration: none; color: #fff; overflow: hidden; min-height: 300px; transition: translate 0.25s; }
+  .feature:hover { translate: 0 -4px; }
+  .feature h2 { font-size: clamp(38px, 4.6vw, 72px); margin: 6px 0 12px; }
+  .feature p { margin: 0 0 18px; max-width: 34ch; }
+  .feature .eyebrow { color: #fff; opacity: 0.85; }
+  .feature.waffle { background: radial-gradient(90% 120% at 80% 50%, color-mix(in srgb, var(--sauce) 70%, #fff) 0%, var(--sauce) 45%, color-mix(in srgb, var(--sauce) 45%, #000) 100%); }
+  .feature.waffle img { width: clamp(150px, 20vw, 290px); filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.45)); }
+  .feature.yil { background: radial-gradient(100% 120% at 20% 20%, #4a3a16 0%, #241a0c 60%, #171008 100%); border: 1px solid #5d4a1f; }
+  .feature.yil h2 span { background: linear-gradient(180deg, #f6e3ac, #c9a24b 55%, #8a6a22); -webkit-background-clip: text; background-clip: text; color: transparent; font-size: 1.5em; }
+  .feature.yil .eyebrow { color: #e8c87a; }
+
+  .why { background: var(--choco); padding: clamp(64px, 9vw, 120px) 0; }
+  .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 44px; }
+  .why-grid > div { border: 1px solid #4a342a; border-radius: 20px; padding: 24px; background: #33201a; }
+  .why-grid .big { display: block; font-size: clamp(38px, 4vw, 60px); color: #fff; margin-bottom: 12px; }
+  .why-grid h3 { font-size: 17px; color: #fff; margin-bottom: 8px; }
+  .why-grid p { color: #cdbba8; margin: 0; }
+
+  .cats { padding: clamp(64px, 9vw, 120px) 0; }
+  .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 40px; }
+  .cat-grid a { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 22px 24px; background: #1c110d; border: 1px solid #3a2a22; border-radius: 18px; text-decoration: none; transition: border-color 0.2s, transform 0.2s; }
+  .cat-grid a:hover { border-color: var(--red); transform: translateY(-2px); }
+  .cat-grid b { font-size: 18px; color: #fff; }
+  .cat-grid span { color: #b9a797; font-size: 14px; white-space: nowrap; }
+
+  @media (max-width: 1000px) {
+    .feature-grid { grid-template-columns: 1fr; }
+    .why-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .why-grid { grid-template-columns: 1fr; }
+    .feature { grid-template-columns: 1fr; }
+    .feature.waffle img { justify-self: center; }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import Lenis from 'lenis';
+
+  gsap.registerPlugin(ScrollTrigger);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduce) {
+    const lenis = new Lenis({ anchors: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((t) => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+    gsap.utils.toArray('[data-reveal]').forEach((el) => {
+      gsap.from(el, { y: 36, autoAlpha: 0, duration: 0.7, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
+    });
+    gsap.from('.hero .wrap > *', { y: 28, autoAlpha: 0, duration: 0.8, stagger: 0.08, ease: 'power3.out' });
+  }
+
+  // ---------- Film: kareler kaydırmaya bağlı oynar ----------
+  const film = document.querySelector('[data-film]');
+  if (film) {
+    const count = Number(film.dataset.count);
+    const canvas = film.querySelector('[data-canvas]');
+    const ctx = canvas.getContext('2d');
+    const src = (i) => `/gorseller/ana-sayfa-video/kareler/kare-${String(i + 1).padStart(3, '0')}.webp`;
+    const frames = new Array(count);
+    let shown = -1;
+    let want = 0;
+
+    const fit = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(canvas.clientWidth * dpr);
+      canvas.height = Math.round(canvas.clientHeight * dpr);
+      shown = -1;
+      draw();
+    };
+    // İstenen kare henüz yüklenmediyse en yakın yüklü kare çizilir
+    const nearest = (i) => {
+      for (let d = 0; d < count; d++) {
+        if (i - d >= 0 && frames[i - d]?.naturalWidth) return i - d;
+        if (i + d < count && frames[i + d]?.naturalWidth) return i + d;
+      }
+      return -1;
+    };
+    const BG = '#120907';
+    const ODAK = 0.6; // dik ekranda karenin ortadaki bu kadarlık bölümü görünür kalır
+    function draw() {
+      const i = nearest(want);
+      if (i < 0 || i === shown) return;
+      const im = frames[i];
+      shown = i;
+      const W = canvas.width, H = canvas.height;
+      // Geniş ekranda kare ekranı kaplar. Dik ekranda pasta kesilmesin diye karenin ortası sığdırılır; üstü ve altı zemine karışır
+      const s = Math.min(Math.max(W / im.naturalWidth, H / im.naturalHeight), W / (im.naturalWidth * ODAK));
+      const w = im.naturalWidth * s, h = im.naturalHeight * s, y = (H - h) / 2;
+      ctx.fillStyle = BG;
+      ctx.fillRect(0, 0, W, H);
+      ctx.drawImage(im, (W - w) / 2, y, w, h);
+      if (h < H - 1) {
+        const f = h * 0.22;
+        for (const [y0, y1] of [[y, y + f], [y + h, y + h - f]]) {
+          const g = ctx.createLinearGradient(0, y0, 0, y1);
+          g.addColorStop(0, BG);
+          g.addColorStop(1, 'rgba(18, 9, 7, 0)');
+          ctx.fillStyle = g;
+          ctx.fillRect(0, Math.min(y0, y1) - 1, W, f + 2);
+        }
+      }
+    }
+    // Kareler sırayla yüklenir; ilk kare hemen görünür
+    (function load(i) {
+      if (i >= count) return;
+      const im = new Image();
+      im.decoding = 'async';
+      im.onload = im.onerror = () => { if (i === 0 || i === want) draw(); load(i + 1); };
+      im.src = src(i);
+      frames[i] = im;
+    })(0);
+    new ResizeObserver(fit).observe(canvas);
+
+    const ms = gsap.utils.toArray('[data-m]', film);
+    if (reduce) {
+      // Hareket kapalıysa son kare ve ürünler doğrudan gösterilir
+      want = count - 1;
+      gsap.set([film.querySelector('[data-cap1]')], { autoAlpha: 0 });
+      gsap.set([film.querySelector('[data-cap2]'), film.querySelector('[data-edge]'), ...ms], { autoAlpha: 1 });
+    } else {
+      // Kaydırmanın ilk %82'si filmi oynatır; kalan kısımda son kare durur ve ürünler belirir
+      const FILM = 0.82;
+      const tl = gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: {
+          trigger: film, start: 'top top', end: () => '+=' + window.innerHeight * 4.2, pin: true, scrub: 0.5,
+          onUpdate: (self) => { want = Math.round(Math.min(self.progress / FILM, 1) * (count - 1)); draw(); },
+        },
+      });
+      tl.to('[data-bar]', { scaleX: 1, duration: 1 }, 0)
+        .to('[data-cap1]', { autoAlpha: 0, y: -40, duration: 0.1 }, 0.06)
+        .to('[data-edge]', { opacity: 1, duration: 0.1 }, FILM - 0.08)
+        .to('[data-cap2]', { autoAlpha: 1, duration: 0.08 }, FILM - 0.04)
+        .fromTo(ms, { autoAlpha: 0, x: (i) => (i % 2 ? 60 : -60) }, { autoAlpha: 1, x: 0, duration: 0.08, stagger: 0.022, ease: 'power2.out' }, FILM);
+    }
+  }
+</script>
