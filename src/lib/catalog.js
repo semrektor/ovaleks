@@ -85,4 +85,6 @@ export const site = {
   telefonHref: 'tel:+902124239595',
   eposta: 'satis@ovaleks.com',
   kayitNo: 'TR-34-K-203012',
+  // Taslak yayındayken arama motorları siteyi dizine eklemez. ovaleks.com'a geçerken false yapın ve vercel.json'daki X-Robots-Tag başlığını kaldırın.
+  taslak: true,
 };
