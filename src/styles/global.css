@@ -25,6 +25,7 @@ body {
   font-family: var(--text);
   font-size: 16px;
   line-height: 1.55;
+  overflow-x: clip; /* kayarak gelen öğeler sayfayı yana taşırmasın (telefonda yatay kaymayı önler) */
 }
 img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; }
@@ -130,6 +131,12 @@ p { margin: 0 0 1em; }
   .site-header .search-btn { margin-left: auto; }
   .site-header .wrap { gap: 14px; }
   .mobile-nav { display: block; }
+}
+/* Telefonda arka plan bulanıklığı kapalı: kaydırırken takılmaya en çok yol açan efekt */
+@media (max-width: 900px) {
+  *, .search-dialog::backdrop { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  .site-header { background: var(--cream); }
+  .theme-dark .site-header { background: rgba(18, 9, 7, 0.92); }
 }
 /* Dar telefonda üst çubuktaki büyüteç gizlenir; arama menünün içindedir */
 @media (max-width: 520px) {

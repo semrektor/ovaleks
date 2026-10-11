@@ -356,7 +356,10 @@ const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity
     new ResizeObserver(layoutFx).observe(fxCanvas);
     let fxVisible = true;
     new IntersectionObserver(([e]) => (fxVisible = e.isIntersecting)).observe(xp);
-    if (!reduceMotion) gsap.ticker.add(() => { if (fxVisible && fx.state.show > 0.001) fx.render(); });
+    // Telefonda sos saniyede 30 kare çizilir (iki tikte bir)
+    const kucuk = window.matchMedia('(max-width: 900px)').matches;
+    let tik = 0;
+    if (!reduceMotion) gsap.ticker.add(() => { if (kucuk && ++tik % 2) return; if (fxVisible && fx.state.show > 0.001) fx.render(); });
   }
 
   function paint() {
