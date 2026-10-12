@@ -34,8 +34,9 @@ const sauce = stageFlavors[0];
 >
   {
     filmVar ? (
+      <div class="film-wrap" data-film-wrap>
       <section class="film" data-film data-count={kareler.length} data-count-m={karelerM.length}>
-        <canvas data-canvas aria-hidden="true" />
+        <div class="stage"><canvas data-canvas aria-hidden="true" /></div>
         <div class="shade" aria-hidden="true" />
         <div class="edge" data-edge aria-hidden="true" />
         <div class="cap c1" data-cap1>
@@ -58,6 +59,7 @@ const sauce = stageFlavors[0];
         </ul>
         <div class="bar" aria-hidden="true"><i data-bar /></div>
       </section>
+      </div>
     ) : (
       <section class="hero">
         <div class="wrap">
@@ -147,8 +149,18 @@ const sauce = stageFlavors[0];
   .lead { font-size: clamp(17px, 1.6vw, 20px); max-width: 54ch; color: #e6d8c6; }
 
   /* ---------- FİLM: kaydırmaya bağlı kare dizisi ---------- */
-  .film { height: 100vh; height: 100svh; overflow: hidden; background: #120907; } /* svh: telefonda adres çubuğu açılıp kapanınca sahne zıplamaz */
-  .film canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  /* Sahne, sarmalayıcının yüksekliği boyunca ekrana yapışık kalır (position: sticky). Sabitlemeyi tarayıcı yaptığı için
+     telefonda kaydırırken titreme olmaz. svh: adres çubuğu açılıp kapanınca yükseklik değişmez. */
+  .film-wrap { height: 520vh; height: 520svh; }
+  .film { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background: #120907; }
+  .film .stage { position: absolute; inset: 0; }
+  .film canvas { display: block; width: 100%; height: 100%; }
+  /* Telefon (dik ekran): tuval karenin kendi boyutundadır ve ortada bir şerit olarak durur; üstü ve altı zemine karışır */
+  .film.is-mobil .stage { inset: auto 0; top: 50%; translate: 0 -50%; aspect-ratio: 16 / 15; }
+  .film.is-mobil .stage::before, .film.is-mobil .stage::after { content: ''; position: absolute; left: 0; right: 0; height: 22%; z-index: 1; pointer-events: none; }
+  .film.is-mobil .stage::before { top: -1px; background: linear-gradient(#120907, rgba(18, 9, 7, 0)); }
+  .film.is-mobil .stage::after { bottom: -1px; background: linear-gradient(rgba(18, 9, 7, 0), #120907); }
+  @media (prefers-reduced-motion: reduce) { .film-wrap { height: auto; } }
   .film .shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(rgba(18, 9, 7, 0.55) 0%, rgba(18, 9, 7, 0) 26%, rgba(18, 9, 7, 0) 74%, rgba(18, 9, 7, 0.6) 100%); }
   /* Filmin sonunda kenarlar site zeminine karışır; ürün kartları bu koyu alanda durur */
   .film .edge { position: absolute; inset: 0; pointer-events: none; opacity: 0; background: linear-gradient(90deg, #120907 0%, rgba(18, 9, 7, 0.75) 12%, rgba(18, 9, 7, 0) 30%, rgba(18, 9, 7, 0) 70%, rgba(18, 9, 7, 0.75) 88%, #120907 100%); }
@@ -242,10 +254,13 @@ const sauce = stageFlavors[0];
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (!reduce) {
-    const lenis = new Lenis({ anchors: true });
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((t) => lenis.raf(t * 1000));
-    gsap.ticker.lagSmoothing(0);
+    // Yumuşak kaydırma yalnızca fareyle kullanılan cihazlarda; dokunmatik ekranda tarayıcının kendi kaydırması kalır
+    if (!window.matchMedia('(pointer: coarse)').matches) {
+      const lenis = new Lenis({ anchors: true });
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add((t) => lenis.raf(t * 1000));
+      gsap.ticker.lagSmoothing(0);
+    }
     gsap.utils.toArray('[data-reveal]').forEach((el) => {
       gsap.from(el, { y: 36, autoAlpha: 0, duration: 0.7, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
     });
@@ -255,73 +270,124 @@ const sauce = stageFlavors[0];
   // ---------- Film: kareler kaydırmaya bağlı oynar ----------
   const film = document.querySelector('[data-film]');
   if (film) {
-    // Telefonda hafif dizi kullanılır: daha az ve daha küçük kare, daha az bellek ve işlem
-    const mobil = window.matchMedia('(max-width: 900px)').matches && Number(film.dataset.countM) > 1;
+    // Telefonda (dik ekran) ayrı bir dizi kullanılır: iki kareden biri, karenin yalnızca görünen orta bölümü (kareler-m/)
+    const mobil = window.matchMedia('(max-width: 900px) and (max-aspect-ratio: 1/1)').matches && Number(film.dataset.countM) > 1 && 'createImageBitmap' in window;
     const count = Number(mobil ? film.dataset.countM : film.dataset.count);
     const canvas = film.querySelector('[data-canvas]');
-    const ctx = canvas.getContext('2d');
     const src = (i) => `/gorseller/ana-sayfa-video/${mobil ? 'kareler-m' : 'kareler'}/kare-${String(i + 1).padStart(3, '0')}.webp`;
-    const frames = new Array(count);
     let shown = -1;
     let want = 0;
+    let draw;
 
-    const fit = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, mobil ? 1.5 : 2);
-      canvas.width = Math.round(canvas.clientWidth * dpr);
-      canvas.height = Math.round(canvas.clientHeight * dpr);
-      shown = -1;
-      draw();
-    };
-    // İstenen kare henüz yüklenmediyse en yakın yüklü kare çizilir
-    const nearest = (i) => {
-      for (let d = 0; d < count; d++) {
-        if (i - d >= 0 && frames[i - d]?.naturalWidth) return i - d;
-        if (i + d < count && frames[i + d]?.naturalWidth) return i + d;
-      }
-      return -1;
-    };
-    const BG = '#120907';
-    const ODAK = 0.6; // dik ekranda karenin ortadaki bu kadarlık bölümü görünür kalır
-    function draw() {
-      const i = nearest(want);
-      if (i < 0 || i === shown) return;
-      const im = frames[i];
-      shown = i;
-      const W = canvas.width, H = canvas.height;
-      // Geniş ekranda kare ekranı kaplar. Dik ekranda pasta kesilmesin diye karenin ortası sığdırılır; üstü ve altı zemine karışır
-      const s = Math.min(Math.max(W / im.naturalWidth, H / im.naturalHeight), W / (im.naturalWidth * ODAK));
-      const w = im.naturalWidth * s, h = im.naturalHeight * s, y = (H - h) / 2;
-      ctx.fillStyle = BG;
-      ctx.fillRect(0, 0, W, H);
-      ctx.drawImage(im, (W - w) / 2, y, w, h);
-      if (h < H - 1) {
-        const f = h * 0.22;
-        for (const [y0, y1] of [[y, y + f], [y + h, y + h - f]]) {
-          const g = ctx.createLinearGradient(0, y0, 0, y1);
-          g.addColorStop(0, BG);
-          g.addColorStop(1, 'rgba(18, 9, 7, 0)');
-          ctx.fillStyle = g;
-          ctx.fillRect(0, Math.min(y0, y1) - 1, W, f + 2);
+    if (mobil) {
+      // Telefon: kareler çizilmeden önce arka planda çözülür (createImageBitmap), böylece kaydırırken ana iş parçacığı
+      // görsel çözmekle uğraşmaz. Bellek dolmasın diye yalnızca gösterilen karenin çevresi çözülmüş tutulur.
+      film.classList.add('is-mobil');
+      const ctx = canvas.getContext('2d', { alpha: false });
+      const sikisik = new Array(count); // indirilen kareler (sıkıştırılmış hâliyle)
+      const acik = new Map(); //           çözülmüş kareler: kare sırası → ImageBitmap
+      const bekleyen = new Set();
+      const PENCERE = 12; // gösterilen karenin önünde ve arkasında hazır tutulan kare sayısı
+      const coz = (i) => {
+        if (i < 0 || i >= count || !sikisik[i] || acik.has(i) || bekleyen.has(i)) return;
+        bekleyen.add(i);
+        createImageBitmap(sikisik[i]).then(
+          (b) => {
+            bekleyen.delete(i);
+            if (Math.abs(i - want) > PENCERE + 4) return b.close();
+            acik.set(i, b);
+            draw();
+          },
+          () => bekleyen.delete(i),
+        );
+      };
+      const pencere = () => {
+        for (let d = 0; d <= PENCERE; d++) { coz(want + d); coz(want - d); }
+        for (const [i, b] of acik) if (Math.abs(i - want) > PENCERE + 4) { b.close(); acik.delete(i); }
+      };
+      let sonIstek = -1;
+      draw = () => {
+        if (want !== sonIstek) { sonIstek = want; pencere(); }
+        // İstenen kare henüz hazır değilse hazır olan en yakın kare çizilir
+        let en = -1;
+        for (const i of acik.keys()) if (en < 0 || Math.abs(i - want) < Math.abs(en - want)) en = i;
+        if (en < 0 || en === shown) return;
+        const b = acik.get(en);
+        if (canvas.width !== b.width || canvas.height !== b.height) { canvas.width = b.width; canvas.height = b.height; }
+        ctx.drawImage(b, 0, 0); // tuval karenin kendi boyutunda: ölçekleme yok
+        shown = en;
+      };
+      let sira = 0;
+      const load = async () => {
+        while (sira < count) {
+          const i = sira++;
+          try { sikisik[i] = await (await fetch(src(i))).blob(); } catch { continue; }
+          if (Math.abs(i - want) <= PENCERE) coz(i);
         }
-      }
+      };
+      for (let k = 0; k < 6; k++) load();
+    } else {
+      const ctx = canvas.getContext('2d');
+      const frames = new Array(count);
+      const fit = () => {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(canvas.clientWidth * dpr);
+        canvas.height = Math.round(canvas.clientHeight * dpr);
+        shown = -1;
+        draw();
+      };
+      // İstenen kare henüz yüklenmediyse en yakın yüklü kare çizilir
+      const nearest = (i) => {
+        for (let d = 0; d < count; d++) {
+          if (i - d >= 0 && frames[i - d]?.naturalWidth) return i - d;
+          if (i + d < count && frames[i + d]?.naturalWidth) return i + d;
+        }
+        return -1;
+      };
+      const BG = '#120907';
+      const ODAK = 0.6; // dik ekranda karenin ortadaki bu kadarlık bölümü görünür kalır
+      draw = () => {
+        const i = nearest(want);
+        if (i < 0 || i === shown) return;
+        const im = frames[i];
+        shown = i;
+        const W = canvas.width, H = canvas.height;
+        // Geniş ekranda kare ekranı kaplar. Dik ekranda pasta kesilmesin diye karenin ortası sığdırılır; üstü ve altı zemine karışır
+        const s = Math.min(Math.max(W / im.naturalWidth, H / im.naturalHeight), W / (im.naturalWidth * ODAK));
+        const w = im.naturalWidth * s, h = im.naturalHeight * s, y = (H - h) / 2;
+        ctx.fillStyle = BG;
+        ctx.fillRect(0, 0, W, H);
+        ctx.drawImage(im, (W - w) / 2, y, w, h);
+        if (h < H - 1) {
+          const f = h * 0.22;
+          for (const [y0, y1] of [[y, y + f], [y + h, y + h - f]]) {
+            const g = ctx.createLinearGradient(0, y0, 0, y1);
+            g.addColorStop(0, BG);
+            g.addColorStop(1, 'rgba(18, 9, 7, 0)');
+            ctx.fillStyle = g;
+            ctx.fillRect(0, Math.min(y0, y1) - 1, W, f + 2);
+          }
+        }
+      };
+      // Kareler baştan sona, aynı anda altı tane olacak şekilde yüklenir; ilk kare hemen görünür
+      let sira = 0;
+      const load = () => {
+        if (sira >= count) return;
+        const im = new Image();
+        im.decoding = 'async';
+        im.onload = im.onerror = () => { draw(); load(); };
+        im.src = src(sira);
+        frames[sira++] = im;
+      };
+      for (let k = 0; k < 6; k++) load();
+      new ResizeObserver(fit).observe(canvas);
     }
-    // Kareler baştan sona, aynı anda altı tane olacak şekilde yüklenir; ilk kare hemen görünür
-    let sira = 0;
-    const load = () => {
-      if (sira >= count) return;
-      const im = new Image();
-      im.decoding = 'async';
-      im.onload = im.onerror = () => { draw(); load(); };
-      im.src = src(sira);
-      frames[sira++] = im;
-    };
-    for (let k = 0; k < 6; k++) load();
-    new ResizeObserver(fit).observe(canvas);
 
     const ms = gsap.utils.toArray('[data-m]', film);
     if (reduce) {
       // Hareket kapalıysa son kare ve ürünler doğrudan gösterilir
       want = count - 1;
+      draw();
       gsap.set([film.querySelector('[data-cap1]')], { autoAlpha: 0 });
       gsap.set([film.querySelector('[data-cap2]'), film.querySelector('[data-edge]'), ...ms], { autoAlpha: 1 });
     } else {
@@ -329,10 +395,12 @@ const sauce = stageFlavors[0];
       const FILM = 0.82;
       const tl = gsap.timeline({
         defaults: { ease: 'none' },
-        scrollTrigger: {
-          trigger: film, start: 'top top', end: () => '+=' + window.innerHeight * 4.2, pin: true, scrub: 0.5,
-          onUpdate: (self) => { want = Math.round(Math.min(self.progress / FILM, 1) * (count - 1)); draw(); },
-        },
+        scrollTrigger: { trigger: film.parentElement, start: 'top top', end: 'bottom bottom', scrub: 0.5 },
+      });
+      // Kare, yumuşatılmış ilerlemeye göre ekran yenilemesi başına en çok bir kez çizilir
+      gsap.ticker.add(() => {
+        want = Math.round(Math.min(tl.progress() / FILM, 1) * (count - 1));
+        draw();
       });
       tl.to('[data-bar]', { scaleX: 1, duration: 1 }, 0)
         .to('[data-cap1]', { autoAlpha: 0, y: -40, duration: 0.1 }, 0.06)
