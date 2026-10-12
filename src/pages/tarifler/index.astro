@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { recipes, plain } from '../../lib/catalog.js';
+import { recipes, plain, thumb } from '../../lib/catalog.js';
 
 const list = recipes.slice().sort((a, b) => a.baslik.localeCompare(b.baslik, 'tr'));
 ---
@@ -15,7 +15,7 @@ const list = recipes.slice().sort((a, b) => a.baslik.localeCompare(b.baslik, 'tr
       {
         list.map((r) => (
           <a class="card" href={`/${r.slug}/`}>
-            {r.gorsel_yerel && <img src={'/' + r.gorsel_yerel} alt={r.baslik} width="400" height="400" loading="lazy" decoding="async" />}
+            {r.gorsel_yerel && <img src={thumb('/' + r.gorsel_yerel)} alt={r.baslik} width="400" height="400" loading="lazy" decoding="async" />}
             <div class="body">
               <div class="name">{r.baslik}</div>
               <div class="meta">{plain(r.icerik_md).slice(0, 90).replace(/\s+\S*$/, '')}…</div>
@@ -29,4 +29,9 @@ const list = recipes.slice().sort((a, b) => a.baslik.localeCompare(b.baslik, 'tr
 
 <style>
   .recipes { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); padding-bottom: 80px; }
+  @media (max-width: 560px) {
+    /* Telefonda iki sütun; özet üç satırla sınırlanır */
+    .recipes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .recipes :global(.meta) { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  }
 </style>

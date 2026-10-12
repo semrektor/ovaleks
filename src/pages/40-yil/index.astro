@@ -162,14 +162,24 @@ const olaylar = [
   .outro .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 28px; }
   .draft { margin-top: 36px; font-size: 13px; color: #8f7d6d; }
 
+  /* Dar ekranda üç kuşak yan yana sığmaz: alt alta dizilir, oklar aşağıyı gösterir */
+  @media (max-width: 640px) {
+    .chain { flex-direction: column; align-items: center; gap: 0; }
+    .chain li { padding: 0 0 44px; }
+    .chain li:last-child { padding-bottom: 0; }
+    .chain .arrow { right: auto; left: calc(50% - 1px); top: auto; bottom: 12px; width: 2px; height: 22px; transform-origin: top; }
+    .chain .arrow::after { right: -4px; top: auto; bottom: -6px; border-left-color: transparent; border-top-color: var(--gold); }
+  }
+
   @media (max-width: 900px) {
     .tl { grid-template-columns: 1fr; padding-top: 20px; overflow-x: clip; } /* sağdan kayarak gelen kartlar sayfayı yana taşırmasın */
     /* Telefonda yıl sayacı sol altta küçük bir rozet olur (sağ altta WhatsApp düğmesi var) */
-    .yearcol { position: sticky; top: auto; bottom: 18px; justify-self: start; justify-items: start; text-align: left; z-index: 6; padding: 8px 14px 10px; border-radius: 16px; background: rgba(18, 9, 7, 0.9); border: 1px solid #5a463a; }
-    .yearcol small { font-size: 9px; }
-    .yearcol span { font-size: 40px; }
+    .yearcol { position: sticky; top: auto; bottom: 18px; justify-self: start; display: flex; align-items: baseline; gap: 8px; height: 50px; z-index: 6; padding: 0 16px; border-radius: 999px; background: #120907; border: 1px solid #5a463a; }
+    .yearcol small { font-size: 10px; letter-spacing: 0.2em; margin: 0; align-self: center; }
+    .yearcol span { font-size: 28px; line-height: 50px; }
+    .year :global(.taslak) { border-radius: 10px; }
     /* Telefonda kuşak ekseni üstte yatay sabit şerit olur */
-    .rail { top: 68px; z-index: 5; display: flex; gap: 0; padding: 12px 0; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); background: rgba(18, 9, 7, 0.92); backdrop-filter: blur(8px); border-bottom: 1px solid #3a2a22; }
+    .rail { top: 68px; z-index: 5; display: flex; gap: 0; padding: 12px 0; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); background: #120907; border-bottom: 1px solid #3a2a22; }
     .rail-line { display: none; }
     .gen { flex: 1; padding-left: 22px; }
     .gen .dot { left: 0; width: 12px; height: 12px; }
@@ -215,7 +225,8 @@ const olaylar = [
     gsap.to(c, { v: 40, duration: 1.6, ease: 'power2.out', onUpdate: () => (num.textContent = Math.round(c.v)) });
     gsap.from('.hero .eyebrow, .hero .yil, .hero .lead, .scroll-hint', { autoAlpha: 0, y: 24, duration: 0.8, stagger: 0.12, delay: 0.3 });
     gsap.from('[data-chain]', { autoAlpha: 0, x: -30, duration: 0.6, stagger: 0.35, delay: 1.0, ease: 'power2.out' });
-    gsap.from('.chain .arrow', { scaleX: 0, duration: 0.5, stagger: 0.35, delay: 1.3, ease: 'power2.out' });
+    // Dar ekranda oklar dikeydir (CSS'teki 640 px kırılımıyla aynı)
+    gsap.from('.chain .arrow', { [window.matchMedia('(max-width: 640px)').matches ? 'scaleY' : 'scaleX']: 0, duration: 0.5, stagger: 0.35, delay: 1.3, ease: 'power2.out' });
 
     // Eksen çizgisi kaydırdıkça dolar; arkadaki yıl 1986'dan 2026'ya sayar
     gsap.fromTo('[data-axis-fill]', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.events', start: 'top 60%', end: 'bottom 60%', scrub: 0.4 } });

@@ -6,6 +6,7 @@ import sauceColors from '../data/sos-renkleri.json';
 
 import allPages from '../data/sayfalar.json';
 import recipes from '../data/tarifler.json';
+import kucukGorseller from '../data/kucuk-gorseller.json';
 
 export { products, categories, recipes };
 
@@ -25,6 +26,9 @@ export const hasForm = (text) => /\*\*\[FORM\]\*\*/.test(text || '');
 export const stripForm = (text) => (text || '').replace(/\*\*\[FORM\]\*\*[\s\S]*?\*\*\[\/FORM\]\*\*/g, '').replace(/^\[(alan|seçim alanı|metin alanı|düğme)[^\n]*\]\s*$/gm, '').replace(/\[gömülü içerik \(iframe\)\]\([^)]*\)/g, '');
 
 export const img = (p) => (p.gorseller_yerel?.[0] ? '/' + p.gorseller_yerel[0] : null);
+// Kartlarda özgün görsel yerine küçük kopyası kullanılır (scripts/kucuk-gorseller.mjs üretir); kopyası yoksa özgünü döner.
+const kucukler = new Set(kucukGorseller);
+export const thumb = (src) => (src && kucukler.has(src) ? src.replace(/^\/gorseller\//, '/gorseller/kucuk/').replace(/\.[a-z]+$/i, '.webp') : src);
 export const productUrl = (p) => `/urunler/${p.slug}/`;
 export const categoryUrl = (c) => new URL(c.url).pathname;
 export const bySlug = new Map(products.map((p) => [p.slug, p]));
@@ -39,7 +43,8 @@ const localize = (html) =>
     .replace(/https:\/\/ovaleks\.com\//g, '/')
     .replace(/\/wp-content\/uploads\//g, '/gorseller/')
     .replace(/(\/gorseller\/[^"'\s)]*?)-\d+x\d+(\.(?:jpe?g|png|webp))/g, '$1$2');
-export const md = (text) => localize(marked.parse(text || '', { async: false }));
+// Metin içindeki görseller ekrana yaklaşınca yüklenir (uzun sayfalar telefonda hızlı açılır)
+export const md = (text) => localize(marked.parse(text || '', { async: false })).replace(/<img /g, '<img loading="lazy" decoding="async" ');
 
 // Açıklamanın başındaki "OVALEKS · ..." satırı ve ürün adını tekrar eden başlık sayfada zaten var.
 export const cleanDescription = (p) =>

@@ -1,5 +1,5 @@
 // Ürün arama dizini: /arama.json  (src/scripts/arama.js okur)
-import { products, img, productUrl } from '../lib/catalog.js';
+import { products, img, thumb, productUrl } from '../lib/catalog.js';
 import { norm } from '../scripts/arama.js';
 
 export function GET() {
@@ -8,7 +8,7 @@ export function GET() {
     return {
       ad: p.ad,
       url: productUrl(p),
-      gorsel: img(p) || null,
+      gorsel: thumb(img(p)) || null,
       kat: kat?.ad || null,
       net: p.alanlar?.Net || p.alanlar?.['Net Miktar'] || null,
       kod: p.sku || null,

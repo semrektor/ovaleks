@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 import Base from '../layouts/Base.astro';
 import LeadSection from '../components/LeadSection.astro';
-import { products, topCategories, inCategory, categoryUrl, bySlug, productUrl, img, site, stageFlavors } from '../lib/catalog.js';
+import { products, topCategories, inCategory, categoryUrl, bySlug, productUrl, img, thumb, site, stageFlavors } from '../lib/catalog.js';
 
 const WAFFLE = '/urun-kategori/cikolata-urunleri/waffle-sos-cesitleri/';
 const kareDir = 'public/gorseller/ana-sayfa-video/kareler';
@@ -51,7 +51,7 @@ const sauce = stageFlavors[0];
           {malzemeler.map((m, i) => (
             <li class={i % 2 ? 'sag' : 'sol'} data-m>
               <a href={productUrl(m.p)}>
-                <img src={img(m.p)} alt={m.p.gorsel_alt || m.p.ad} width="200" height="200" loading="lazy" />
+                <img src={thumb(img(m.p))} alt={m.p.gorsel_alt || m.p.ad} width="200" height="200" loading="lazy" />
                 <span><small>{m.rol}</small><b>{m.p.ad}</b></span>
               </a>
             </li>
