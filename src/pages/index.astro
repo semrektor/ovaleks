@@ -6,6 +6,7 @@
 import fs from 'node:fs';
 import Base from '../layouts/Base.astro';
 import LeadSection from '../components/LeadSection.astro';
+import ExportMap from '../components/ExportMap.astro';
 import { products, topCategories, inCategory, categoryUrl, bySlug, productUrl, img, thumb, site, stageFlavors } from '../lib/catalog.js';
 
 const WAFFLE = '/urun-kategori/cikolata-urunleri/waffle-sos-cesitleri/';
@@ -128,6 +129,9 @@ const sauce = stageFlavors[0];
       </div>
     </div>
   </section>
+
+  <!-- İHRACAT HARİTASI -->
+  <ExportMap />
 
   <!-- ÜRÜN GRUPLARI -->
   <section class="cats">
