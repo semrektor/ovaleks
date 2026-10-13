@@ -185,8 +185,8 @@ export function createSauceFx(canvas, { color }) {
     layout = { band: bandPx / h, maxLen, drips: drips ? 1 : 0, waveLine };
   }
 
-  // Telefonda düşük çözünürlükte çizilip büyütülür: akan sos yumuşak geçişli olduğu için fark edilmez, cihazı yormaz
-  const kucuk = window.matchMedia('(max-width: 900px)').matches;
+  // Telefonda ve tablette düşük çözünürlükte çizilip büyütülür: akan sos yumuşak geçişli olduğu için fark edilmez, cihazı yormaz
+  const kucuk = window.matchMedia('(max-width: 900px), (pointer: coarse)').matches;
   function resize() {
     const dpr = kucuk ? 0.6 : Math.min(window.devicePixelRatio || 1, 1.5);
     const w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);

@@ -157,13 +157,21 @@ const sauce = stageFlavors[0];
      telefonda kaydırırken titreme olmaz. svh: adres çubuğu açılıp kapanınca yükseklik değişmez. */
   .film-wrap { height: 520vh; height: 520svh; }
   .film { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background: #120907; }
+  /* Tuval karenin kendi boyutundadır; ekrana büyütmeyi tarayıcı yapar. Geniş ekranda kare ekranı kaplar. */
   .film .stage { position: absolute; inset: 0; }
-  .film canvas { display: block; width: 100%; height: 100%; }
-  /* Telefon (dik ekran): tuval karenin kendi boyutundadır ve ortada bir şerit olarak durur; üstü ve altı zemine karışır */
+  .film canvas { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .film .stage::before, .film .stage::after { position: absolute; left: 0; right: 0; height: 22%; z-index: 1; pointer-events: none; }
+  .film .stage::before { top: -1px; background: linear-gradient(#120907, rgba(18, 9, 7, 0)); }
+  .film .stage::after { bottom: -1px; background: linear-gradient(rgba(18, 9, 7, 0), #120907); }
+  /* Dik ya da kareye yakın ekran (dik tutulan tablet, dar pencere): pasta kesilmesin diye karenin ortadaki %60'ı
+     ekran genişliğine sığdırılır, ortada bir şerit olarak durur; üstü ve altı zemine karışır */
+  @media (max-aspect-ratio: 16/15) {
+    .film:not(.is-mobil) .stage { inset: auto; left: 50%; top: 50%; width: 166.667%; aspect-ratio: 16 / 9; translate: -50% -50%; }
+    .film:not(.is-mobil) .stage::before, .film:not(.is-mobil) .stage::after { content: ''; }
+  }
+  /* Telefon: kare dizisi zaten yalnızca orta bölümü içerir (16:15) */
   .film.is-mobil .stage { inset: auto 0; top: 50%; translate: 0 -50%; aspect-ratio: 16 / 15; }
-  .film.is-mobil .stage::before, .film.is-mobil .stage::after { content: ''; position: absolute; left: 0; right: 0; height: 22%; z-index: 1; pointer-events: none; }
-  .film.is-mobil .stage::before { top: -1px; background: linear-gradient(#120907, rgba(18, 9, 7, 0)); }
-  .film.is-mobil .stage::after { bottom: -1px; background: linear-gradient(rgba(18, 9, 7, 0), #120907); }
+  .film.is-mobil .stage::before, .film.is-mobil .stage::after { content: ''; }
   @media (prefers-reduced-motion: reduce) { .film-wrap { height: auto; } }
   .film .shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(rgba(18, 9, 7, 0.55) 0%, rgba(18, 9, 7, 0) 26%, rgba(18, 9, 7, 0) 74%, rgba(18, 9, 7, 0.6) 100%); }
   /* Filmin sonunda kenarlar site zeminine karışır; ürün kartları bu koyu alanda durur */
@@ -192,8 +200,8 @@ const sauce = stageFlavors[0];
   .malzeme b { font-size: 15px; line-height: 1.25; }
   .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255, 255, 255, 0.12); }
   .bar i { display: block; height: 100%; background: var(--red); transform-origin: left; transform: scaleX(0); }
-  @media (max-width: 900px), (max-aspect-ratio: 5/4) {
-    /* Telefonda ve dik/kareye yakın ekranlarda ürünler pastanın üstüne değil, altta yatay kaydırılan bir şeritte durur */
+  @media (max-width: 900px), (max-aspect-ratio: 3/2) {
+    /* Telefonda, tablette ve dik/kareye yakın ekranlarda ürünler pastanın üstüne değil, altta yatay kaydırılan bir şeritte durur */
     .malzeme { inset: auto 0 86px 0; /* sağ alttaki WhatsApp düğmesinin üstünde kalır */ display: flex; gap: 10px; overflow-x: auto; padding: 0 var(--gutter); pointer-events: auto; scrollbar-width: none; }
     .malzeme li, .malzeme li.sol, .malzeme li.sag { position: static; flex: 0 0 min(72vw, 280px); }
     .film .edge { display: none; }
@@ -274,118 +282,69 @@ const sauce = stageFlavors[0];
   // ---------- Film: kareler kaydırmaya bağlı oynar ----------
   const film = document.querySelector('[data-film]');
   if (film) {
-    // Telefonda (dik ekran) ayrı bir dizi kullanılır: iki kareden biri, karenin yalnızca görünen orta bölümü (kareler-m/)
-    const mobil = window.matchMedia('(max-width: 900px) and (max-aspect-ratio: 1/1)').matches && Number(film.dataset.countM) > 1 && 'createImageBitmap' in window;
+    // Telefonda (dik ekran) ayrı bir dizi kullanılır: iki kareden biri, karenin yalnızca görünen orta bölümü (kareler-m/).
+    // Tablet ve masaüstü tam kareleri kullanır; yerleşimi (ekranı kaplama ya da ortaya sığdırma) CSS yapar.
+    const mobil = window.matchMedia('(max-width: 900px) and (max-aspect-ratio: 1/1)').matches && Number(film.dataset.countM) > 1;
+    if (mobil) film.classList.add('is-mobil');
     const count = Number(mobil ? film.dataset.countM : film.dataset.count);
     const canvas = film.querySelector('[data-canvas]');
     const src = (i) => `/gorseller/ana-sayfa-video/${mobil ? 'kareler-m' : 'kareler'}/kare-${String(i + 1).padStart(3, '0')}.webp`;
     let shown = -1;
     let want = 0;
-    let draw;
 
-    if (mobil) {
-      // Telefon: kareler çizilmeden önce arka planda çözülür (createImageBitmap), böylece kaydırırken ana iş parçacığı
-      // görsel çözmekle uğraşmaz. Bellek dolmasın diye yalnızca gösterilen karenin çevresi çözülmüş tutulur.
-      film.classList.add('is-mobil');
-      const ctx = canvas.getContext('2d', { alpha: false });
-      const sikisik = new Array(count); // indirilen kareler (sıkıştırılmış hâliyle)
-      const acik = new Map(); //           çözülmüş kareler: kare sırası → ImageBitmap
-      const bekleyen = new Set();
-      const PENCERE = 12; // gösterilen karenin önünde ve arkasında hazır tutulan kare sayısı
-      const coz = (i) => {
-        if (i < 0 || i >= count || !sikisik[i] || acik.has(i) || bekleyen.has(i)) return;
-        bekleyen.add(i);
-        createImageBitmap(sikisik[i]).then(
-          (b) => {
-            bekleyen.delete(i);
-            if (Math.abs(i - want) > PENCERE + 4) return b.close();
-            acik.set(i, b);
-            draw();
-          },
-          () => bekleyen.delete(i),
-        );
-      };
-      const pencere = () => {
-        for (let d = 0; d <= PENCERE; d++) { coz(want + d); coz(want - d); }
-        for (const [i, b] of acik) if (Math.abs(i - want) > PENCERE + 4) { b.close(); acik.delete(i); }
-      };
-      let sonIstek = -1;
-      draw = () => {
-        if (want !== sonIstek) { sonIstek = want; pencere(); }
-        // İstenen kare henüz hazır değilse hazır olan en yakın kare çizilir
-        let en = -1;
-        for (const i of acik.keys()) if (en < 0 || Math.abs(i - want) < Math.abs(en - want)) en = i;
-        if (en < 0 || en === shown) return;
-        const b = acik.get(en);
-        if (canvas.width !== b.width || canvas.height !== b.height) { canvas.width = b.width; canvas.height = b.height; }
-        ctx.drawImage(b, 0, 0); // tuval karenin kendi boyutunda: ölçekleme yok
-        shown = en;
-      };
-      let sira = 0;
-      const load = async () => {
-        while (sira < count) {
-          const i = sira++;
-          try { sikisik[i] = await (await fetch(src(i))).blob(); } catch { continue; }
-          if (Math.abs(i - want) <= PENCERE) coz(i);
-        }
-      };
-      for (let k = 0; k < 6; k++) load();
-    } else {
-      const ctx = canvas.getContext('2d');
-      const frames = new Array(count);
-      const fit = () => {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        canvas.width = Math.round(canvas.clientWidth * dpr);
-        canvas.height = Math.round(canvas.clientHeight * dpr);
-        shown = -1;
-        draw();
-      };
-      // İstenen kare henüz yüklenmediyse en yakın yüklü kare çizilir
-      const nearest = (i) => {
-        for (let d = 0; d < count; d++) {
-          if (i - d >= 0 && frames[i - d]?.naturalWidth) return i - d;
-          if (i + d < count && frames[i + d]?.naturalWidth) return i + d;
-        }
-        return -1;
-      };
-      const BG = '#120907';
-      const ODAK = 0.6; // dik ekranda karenin ortadaki bu kadarlık bölümü görünür kalır
-      draw = () => {
-        const i = nearest(want);
-        if (i < 0 || i === shown) return;
-        const im = frames[i];
-        shown = i;
-        const W = canvas.width, H = canvas.height;
-        // Geniş ekranda kare ekranı kaplar. Dik ekranda pasta kesilmesin diye karenin ortası sığdırılır; üstü ve altı zemine karışır
-        const s = Math.min(Math.max(W / im.naturalWidth, H / im.naturalHeight), W / (im.naturalWidth * ODAK));
-        const w = im.naturalWidth * s, h = im.naturalHeight * s, y = (H - h) / 2;
-        ctx.fillStyle = BG;
-        ctx.fillRect(0, 0, W, H);
-        ctx.drawImage(im, (W - w) / 2, y, w, h);
-        if (h < H - 1) {
-          const f = h * 0.22;
-          for (const [y0, y1] of [[y, y + f], [y + h, y + h - f]]) {
-            const g = ctx.createLinearGradient(0, y0, 0, y1);
-            g.addColorStop(0, BG);
-            g.addColorStop(1, 'rgba(18, 9, 7, 0)');
-            ctx.fillStyle = g;
-            ctx.fillRect(0, Math.min(y0, y1) - 1, W, f + 2);
-          }
-        }
-      };
-      // Kareler baştan sona, aynı anda altı tane olacak şekilde yüklenir; ilk kare hemen görünür
-      let sira = 0;
-      const load = () => {
-        if (sira >= count) return;
-        const im = new Image();
-        im.decoding = 'async';
-        im.onload = im.onerror = () => { draw(); load(); };
-        im.src = src(sira);
-        frames[sira++] = im;
-      };
-      for (let k = 0; k < 6; k++) load();
-      new ResizeObserver(fit).observe(canvas);
+    // Kareler çizilmeden önce arka planda çözülür (createImageBitmap), böylece kaydırırken ana iş parçacığı görsel
+    // çözmekle uğraşmaz. Bellek dolmasın diye yalnızca gösterilen karenin çevresi çözülmüş tutulur.
+    // Tuval karenin kendi boyutundadır (ölçekleme yok); ekrana büyütmeyi tarayıcı yapar.
+    const ctx = canvas.getContext('2d', { alpha: false });
+    const sikisik = new Array(count); // indirilen kareler (sıkıştırılmış hâliyle)
+    const acik = new Map(); //           çözülmüş kareler: kare sırası → çizilebilir görsel
+    const bekleyen = new Set();
+    const PENCERE = mobil ? 12 : 8; // gösterilen karenin önünde ve arkasında hazır tutulan kare sayısı
+    const bitmap = 'createImageBitmap' in window;
+    const ac = (blob) =>
+      bitmap
+        ? createImageBitmap(blob)
+        : new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = URL.createObjectURL(blob); });
+    const kapat = (b) => (b.close ? b.close() : URL.revokeObjectURL(b.src));
+    const coz = (i) => {
+      if (i < 0 || i >= count || !sikisik[i] || acik.has(i) || bekleyen.has(i)) return;
+      bekleyen.add(i);
+      ac(sikisik[i]).then(
+        (b) => {
+          bekleyen.delete(i);
+          if (Math.abs(i - want) > PENCERE + 4) return kapat(b);
+          acik.set(i, b);
+          draw();
+        },
+        () => bekleyen.delete(i),
+      );
+    };
+    const pencere = () => {
+      for (let d = 0; d <= PENCERE; d++) { coz(want + d); coz(want - d); }
+      for (const [i, b] of acik) if (Math.abs(i - want) > PENCERE + 4) { kapat(b); acik.delete(i); }
+    };
+    let sonIstek = -1;
+    function draw() {
+      if (want !== sonIstek) { sonIstek = want; pencere(); }
+      // İstenen kare henüz hazır değilse hazır olan en yakın kare çizilir
+      let en = -1;
+      for (const i of acik.keys()) if (en < 0 || Math.abs(i - want) < Math.abs(en - want)) en = i;
+      if (en < 0 || en === shown) return;
+      const b = acik.get(en);
+      if (canvas.width !== b.width || canvas.height !== b.height) { canvas.width = b.width; canvas.height = b.height; }
+      ctx.drawImage(b, 0, 0);
+      shown = en;
     }
+    // Kareler baştan sona, aynı anda altı tane olacak şekilde indirilir; ilk kare hemen görünür
+    let sira = 0;
+    const load = async () => {
+      while (sira < count) {
+        const i = sira++;
+        try { sikisik[i] = await (await fetch(src(i))).blob(); } catch { continue; }
+        if (Math.abs(i - want) <= PENCERE) coz(i);
+      }
+    };
+    for (let k = 0; k < 6; k++) load();
 
     const ms = gsap.utils.toArray('[data-m]', film);
     if (reduce) {

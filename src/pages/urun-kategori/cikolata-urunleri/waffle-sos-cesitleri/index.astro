@@ -256,11 +256,17 @@ const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity
   .xp.is-live .pedestal { display: block; position: absolute; left: 50%; top: calc(60% + 19vh); width: 30vh; height: 5vh; translate: -50% -50%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--sauce) 85%, #fff) 0%, color-mix(in srgb, var(--sauce) 60%, transparent) 45%, transparent 100%); filter: blur(6px); }
   /* Not: GSAP'in hareket ettirdiği öğelerde CSS translate/rotate/scale kullanılmıyor; ortalama left/right/flex ile yapılıyor. */
   .xp.is-live:not(.is-moving) .slot[data-slot='0'] { animation: bob 4.8s ease-in-out infinite; }
-  @keyframes bob { 50% { top: 58.7%; } }
+  @keyframes bob { 50% { translate: -50% calc(-50% - 1.3vh); } } /* translate: sayfa düzenini yeniden hesaplatmaz */
+  /* Dokunmatik ekran (tablet): ağır süzgeçler kapalı; yan şişeler parlaklık yerine saydamlıkla koyulaşır */
+  @media (pointer: coarse) {
+    .xp.is-live .slot img, .xp.is-live .slot:hover img, .xp.is-live .slot[data-slot='0'] img { filter: none; }
+    .xp.is-live .slot:not([data-slot='0']) { opacity: calc(0.5 - var(--d) * 0.1); }
+  }
   .xp.is-live .picker { position: absolute; left: 0; right: 0; bottom: 18px; margin-inline: auto; width: min(560px, 90vw); text-align: center; }
   .xp.is-live .picker .name span { font-size: clamp(28px, 3.2vw, 46px); white-space: nowrap; }
   .xp.is-live .picker .hint { margin-top: 4px; }
   .xp.is-live .kova-big { position: absolute; margin: 0; width: min(56vh, 34vw); left: 44%; top: calc(52% - min(28vh, 17vw)); opacity: 0; filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.45)); pointer-events: none; }
+  @media (pointer: coarse) { .xp.is-live .kova-big { filter: none; } }
   .xp.is-live .panels { position: absolute; inset: 0; margin: 0; display: block; pointer-events: none; }
   .xp.is-live .panel { position: absolute; left: clamp(24px, 6vw, 96px); top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; width: min(34vw, 460px); background: none; padding: 40px 0 0; border-radius: 0; opacity: 0; }
   .xp.is-live .panel.on { pointer-events: auto; }
@@ -356,10 +362,18 @@ const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity
     new ResizeObserver(layoutFx).observe(fxCanvas);
     let fxVisible = true;
     new IntersectionObserver(([e]) => (fxVisible = e.isIntersecting)).observe(xp);
-    // Telefonda sos saniyede 30 kare çizilir (iki tikte bir)
-    const kucuk = window.matchMedia('(max-width: 900px)').matches;
-    let tik = 0;
-    if (!reduceMotion) gsap.ticker.add(() => { if (kucuk && ++tik % 2) return; if (fxVisible && fx.state.show > 0.001) fx.render(); });
+    // Telefonda ve tablette sos saniyede en çok 30 kare çizilir (120 Hz ekranlarda da)
+    const hafif = window.matchMedia('(max-width: 900px), (pointer: coarse)').matches;
+    let son = 0;
+    if (!reduceMotion) {
+      gsap.ticker.add(() => {
+        if (!fxVisible || fx.state.show <= 0.001) return;
+        const simdi = performance.now();
+        if (hafif && simdi - son < 32) return;
+        son = simdi;
+        fx.render();
+      });
+    }
   }
 
   function paint() {
@@ -427,17 +441,23 @@ const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity
   });
 
   mm.add('(prefers-reduced-motion: no-preference)', () => {
-    lenis = new Lenis({ anchors: true });
-    lenis.on('scroll', ScrollTrigger.update);
-    const tick = (t) => lenis.raf(t * 1000);
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
+    // Yumuşak kaydırma yalnızca fareyle kullanılan cihazlarda; dokunmatik ekranda (telefon, tablet) tarayıcının kendi kaydırması kalır
+    const dokunmatik = window.matchMedia('(pointer: coarse)').matches;
+    let tick = null;
+    if (!dokunmatik) {
+      lenis = new Lenis({ anchors: true });
+      lenis.on('scroll', ScrollTrigger.update);
+      tick = (t) => lenis.raf(t * 1000);
+      gsap.ticker.add(tick);
+      gsap.ticker.lagSmoothing(0);
+    }
 
     gsap.utils.toArray('[data-reveal]').forEach((el) => {
       gsap.from(el, { y: 36, autoAlpha: 0, duration: 0.7, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
     });
 
     return () => {
+      if (!lenis) return;
       gsap.ticker.remove(tick);
       lenis.destroy();
       lenis = null;
@@ -479,7 +499,7 @@ const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity
         const step = (st.end - st.start) / STEPS;
         const target = st.start + Math.round((y - st.start) / step) * step;
         if (Math.abs(target - y) > 2) scrollToY(target);
-      }, 170);
+      }, lenis ? 170 : 300); // dokunmatik ekranda parmakla kaydırmanın bitmesi için daha uzun beklenir
     };
 
     const tl = gsap.timeline({

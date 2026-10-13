@@ -213,11 +213,14 @@ const olaylar = [
 
   const mm = gsap.matchMedia();
   mm.add('(prefers-reduced-motion: no-preference)', () => {
-    const lenis = new Lenis({ anchors: true });
-    lenis.on('scroll', ScrollTrigger.update);
+    // Yumuşak kaydırma yalnızca fareyle kullanılan cihazlarda; dokunmatik ekranda tarayıcının kendi kaydırması kalır
+    const lenis = window.matchMedia('(pointer: coarse)').matches ? null : new Lenis({ anchors: true });
     const tick = (t) => lenis.raf(t * 1000);
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
+    if (lenis) {
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(tick);
+      gsap.ticker.lagSmoothing(0);
+    }
 
     // Giriş: 40 sayar, kuşak zinciri sırayla belirir, oklar çizilir
     const num = document.querySelector('[data-count]');
@@ -268,6 +271,6 @@ const olaylar = [
     });
     gsap.from('.outro > .wrap > *', { autoAlpha: 0, y: 30, duration: 0.7, stagger: 0.1, scrollTrigger: { trigger: '.outro', start: 'top 80%' } });
 
-    return () => { gsap.ticker.remove(tick); lenis.destroy(); };
+    return () => { if (lenis) { gsap.ticker.remove(tick); lenis.destroy(); } };
   });
 </script>

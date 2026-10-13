@@ -132,8 +132,8 @@ p { margin: 0 0 1em; }
   .site-header .wrap { gap: 14px; }
   .mobile-nav { display: block; }
 }
-/* Telefonda arka plan bulanıklığı kapalı: kaydırırken takılmaya en çok yol açan efekt */
-@media (max-width: 900px) {
+/* Telefonda ve tablette (dokunmatik ekran) arka plan bulanıklığı kapalı: kaydırırken takılmaya en çok yol açan efekt */
+@media (max-width: 900px), (pointer: coarse) {
   *, .search-dialog::backdrop { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
   .site-header { background: var(--cream); }
   .theme-dark .site-header { background: rgba(18, 9, 7, 0.92); }
